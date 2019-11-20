@@ -1,0 +1,65 @@
+---
+title: "Math 275 Lab 3"
+author: "Zachary Goodsell"
+date: "10/9/2019"
+output: html_document
+---
+
+```{r setup, echo = FALSE, results='hide'}
+download.file("http://www.openintro.org/stat/data/kobe.RData", destfile =
+"kobe.RData")
+load("kobe.RData")
+head(kobe)
+kobe$basket[1:9]
+kobe_streak <- calc_streak(kobe$basket)
+
+outcomes <- c("heads", "tails")
+sample(outcomes, size = 1, replace = TRUE)
+sim_fair_coin <- sample(outcomes, size = 100, replace = TRUE)
+sim_fair_coin
+table(sim_fair_coin)
+sim_unfair_coin <- sample(outcomes, size = 100, replace = TRUE, prob = c(0.2, 0.8))
+table(sim_unfair_coin)
+
+```
+
+## Exercise 1
+A streak length of 1 means that Kobe Bryant made 1 shot then missed one shot. A streak length of 0 means that Kobe Bryant made 0 shots and  missed one shot.
+
+## Exercise 2
+```{r setup2, echo = FALSE}
+barplot(table(kobe_streak))
+```
+
+The distribution of Kobe’s streak lengths from the 2009 NBA finals seems to average at about 1 with a majority of streaks being 0 or 1.His longest streak was 4.
+
+## Exercise 3
+```{r setup3, echo = FALSE}
+table(sim_unfair_coin)[1]
+```
+
+## Exercise 4
+Need to change size to 133 and probability to 65% for a M and 45% for a H
+```{r setup4, echo = FALSE}
+outcomesB <- c("M", "H")
+sim_basket <- sample(outcomesB, size = 133, replace = TRUE, prob = c(0.65, 0.45))
+table(sim_basket)
+```
+
+## Exercise 5
+```{r setup5, echo = FALSE}
+barplot(table(calc_streak(sim_basket)))
+
+```
+
+The distribution of streak lengths shows that over 50% of the streaks are 0. The typical streak length is less then 1 with the longest streak being 5.
+
+## Exercise 6
+If I were to run the simulation of the independent shooter a second time, I would expect its streak distribution when to compare to the distribution from the question above to be very similar. This is because the probability of any streak happening is the same for every shot.
+
+## Exercise 7
+Kobe Bryant’s distribution of streak lengths from page 2 when compare to the distribution of
+streak lengths for the simulated shooter seems to be more consistent as the streak increases to 2 and 3. This consistency when getting higher streaks could be evidence to that the hot hand model fits Kobe’s shooting patterns.
+
+## Optional
+This code works by counting the ammount of H that are seen before a M. This is done by turning H into 1's and then couting the number of 1's between M's.

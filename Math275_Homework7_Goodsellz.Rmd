@@ -1,0 +1,78 @@
+---
+title: "Math275_Homework7_GoodsellZ"
+author: "Zachary Goodsell"
+date: "11/11/2019"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("prettydoc")
+#install.packages("faraway")
+#install.packages("devtools")
+library("devtools")
+library(devtools)
+install_github("kassambara/easyGgplot2")
+library(easyGgplot2)
+#install.packages("dplyr")
+library("dplyr")
+#install.packages("htmltools")
+library(htmltools)
+library(readxl)
+brainsize2 <- read_excel("brainsize2.xlsx")
+
+```
+
+## Question 1
+
+Autistic Summary - 
+```{r q1, echo = FALSE}
+aut=subset(brainsize2,group=='Autistic')
+cont=subset(brainsize2,group=='Control')
+summary(aut)
+```
+
+Control Summary - 
+```{r q11, echo = FALSE}
+summary(cont)
+```
+
+## Question 2
+
+```{r q2, echo = FALSE}
+boxplot(brainsize2$brainvolume~brainsize2$group, horizontal = TRUE
+        ,medcol = "sienna", 
+        col = c("light blue","tomato"))
+
+
+ggplot2.histogram(data=brainsize2, xName='brainvolume', groupName='group', legendPosition="right",
+                  alpha=0.5, addDensity=TRUE, 
+                  addMeanLine=TRUE, meanLineSize=1.5, bins = 10, xtitle = "Brain Volume",
+                  ytitle = "Frequency (%)",xtitleFont=c(13,"bold", "#993333"), 
+                  ytitleFont=c(13,"bold", "#993333"))
+```
+
+## Question 3
+
+Two-sample t-test results - 
+
+```{r q3, echo = FALSE}
+t.test(brainsize2$brainvolume~brainsize2$group)
+
+```
+
+Technical - 
+Our null hypothesis that the average brain size of the Autistic boys is equal to the average brain size of the healthy boys gives a p-value of 0.0001172 given our data. This number isn’t significant therefore we should reject the null hypothesis. The alternative hypothesis that the averages of these two groups are not the same is accepted We are 95% confident that any random group is between 64.7705 and 171.8628.
+
+Non-technical - 
+We rejected the null hypothesis that the average brain size of the Autistic boys is equal to the average brain size of the healthy boys. Therefore, we assume that the averages of these two groups are not the same. We are 95% confident that any random sample from this groups is between 64.7705 and 171.8628.
+
+## Question 4
+
+The p-value of 0.0001172 is so small that we reject it because it's not significant enough.
+
+## Question 5 
+We are 95% confident that any random sample from this groups is between 64.7705 and 171.8628.

@@ -1,0 +1,126 @@
+---
+title: "Math275_Homework3"
+author: "Zachary Goodsell"
+date: "10/5/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 3.6
+
+Sum of 1 probability - 
+```{r sumProb1, echo = FALSE}
+#The first die has to be a 1 therefore the next one has to be a 0
+1/6*0/6
+```
+
+Sum of 5 probability - 
+```{r sumProb2, echo = FALSE}
+#the first die has to be a 1-4 therefore there is only one other possiblilty the othe die has to be
+4/6*1/6
+```
+
+Sum of 12 probability - 
+```{r sumProb3, echo = FALSE}
+#the first die has to be a 6 therefore there is only one other possiblilty the othe die has to be - 6
+1/6*1/6
+```
+
+## Question 3.9
+
+a- Having two randomly selected students from your class that both earn A's are independent because student 1's grade doesn't affect students 2 grade.
+
+b- Having both you and your class study partner earn an A in the course is neither because if the two students get A's that means they studied well together.
+
+c- No because the two events may have no affect on each other.  
+
+## Question 3.16
+
+a- No, because those without excellent health also have health coverage.
+
+b - 23.29%
+
+c- 
+```{r health1, echo = FALSE}
+0.2099/0.8738
+#= 24.02%
+```
+
+d- 
+```{r health2, echo = FALSE}
+0.0230/0.1262 
+#= 18.26%
+```
+
+e- No because when compared to people of the same health coverage status it shows that the approximate percent of excellent health is the same.
+
+## Question 3.20
+
+```{r prob1, echo = FALSE}
+(.99*0.03)/(.99*.03 + .02 * .97)
+
+```
+
+## Question 3.30
+
+a- 
+Expected winnings -
+```{r prob2, echo = FALSE}
+
+#probabily of winning nothing 
+x0 = 26/52
+
+#probabily of winning 5 
+x5 = 13/52
+
+#probabily of winning 10 
+x10 = 12/52
+
+#probabily of winning 20 
+x20 = 1/52
+
+expected_winnings = x0 * 0 + x5 * 5 + x10 * 10 + x20 * 20
+
+expected_winnings
+
+
+```
+Standard Deviation -
+```{r prob3, echo = FALSE}
+total_mon = 13 * 5 + 12 * 10 + 1 *20
+
+sd2 = ((0-total_mon/52)^2 * x0) + ((5-total_mon/52)^2 * x5) + ((10-total_mon/52)^2 * x10) + ((20-total_mon/52)^2 * x20)
+  
+sqrt(sd2)
+  
+```
+
+b- The maximum I would bet is $3.94 because with that bet I should always be able to break even.
+
+
+## Question 3.38
+
+a- 
+The distribution of total personal income is that 69.3% of the incomes are between $15k and $65k
+
+b- 
+```{r prob4, echo = FALSE}
+income_perc <- c(0.022, 0.047, 0.158, 0.183, 0.212, 0.139, 0.058, 0.084, 0.097)
+male_perc <- 0.59
+female_perc <- 0.41
+
+sum(income_perc[1:5])
+
+```
+
+c- Here we have to assume that all females are evenly distributed across all income ranges.
+
+```{r prob5, echo = FALSE}
+sum(income_perc[1:5]) * female_perc
+
+```
+
+d- My assumption that all females are evenly distributed was wrong because my percent for females that make less than $50,000 per year was 25% not 72% that was given.

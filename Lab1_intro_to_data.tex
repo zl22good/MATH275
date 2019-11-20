@@ -1,0 +1,559 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Math 275 Lab 1 Intro to Data},
+            pdfauthor={Zachary Goodsell},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Math 275 Lab 1 Intro to Data}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Zachary Goodsell}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{9/24/2019}
+
+
+\begin{document}
+\maketitle
+
+\hypertarget{question-1}{%
+\subsection{Question 1}\label{question-1}}
+
+There are 20,000 cases and 9 variables for each of these cases. Data
+types - genhlth:categorical, exerany:binary,
+hlthplan:binary,smoke100:binary,
+height:continuous,weight:continuous,wtdesire:continuous,
+age:continuous,gender:binary
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{names}\NormalTok{(cdc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "genhlth"  "exerany"  "hlthplan" "smoke100" "height"   "weight"  
+## [7] "wtdesire" "age"      "gender"
+\end{verbatim}
+
+\hypertarget{question-2}{%
+\subsection{Question 2}\label{question-2}}
+
+The interquartile range of height is 6. The interquartile range of age
+is 26. The gender frequency is 47.8\% for males and 52.1\% for females.
+The exerany frequency is 25.4\% for 0 and 74.6\% for 1. 0 is for no
+monthly exercise and 1 is for monthly exercise. There are 9569 males in
+the sample. For participants with excellent health the percent is
+23.3\%.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{height)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   48.00   64.00   67.00   67.18   70.00   93.00
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{age)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   18.00   31.00   43.00   45.07   57.00   99.00
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{iqr_height=}\KeywordTok{summary}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{height)[}\DecValTok{5}\NormalTok{]}\OperatorTok{-}\KeywordTok{summary}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{height)[}\DecValTok{2}\NormalTok{]}
+\NormalTok{iqr_height}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 3rd Qu. 
+##       6
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Interquartile range of height is 6}
+\NormalTok{iqr_age=}\KeywordTok{summary}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{age)[}\DecValTok{5}\NormalTok{]}\OperatorTok{-}\KeywordTok{summary}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{age)[}\DecValTok{2}\NormalTok{]}
+\NormalTok{iqr_age}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 3rd Qu. 
+##      26
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Interquartile range of age is 26}
+\NormalTok{gender=}\KeywordTok{table}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{gender)}
+\NormalTok{genderFreq =}\StringTok{ }\NormalTok{gender}\OperatorTok{/}\DecValTok{20000}
+\NormalTok{genderFreq}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##       m       f 
+## 0.47845 0.52155
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{barplot}\NormalTok{(genderFreq)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lab1_intro_to_data_files/figure-latex/cdc2-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{exerany=}\KeywordTok{table}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{exerany)}
+\NormalTok{exeranyFreq =}\StringTok{ }\NormalTok{exerany}\OperatorTok{/}\DecValTok{20000}
+\NormalTok{exeranyFreq}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##      0      1 
+## 0.2543 0.7457
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{barplot}\NormalTok{(exeranyFreq)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lab1_intro_to_data_files/figure-latex/cdc2-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{table}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{gender)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##     m     f 
+##  9569 10431
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{numMales =}\StringTok{ }\KeywordTok{table}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{gender)[}\DecValTok{1}\NormalTok{]}
+\NormalTok{numMales}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    m 
+## 9569
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{table}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{genhlth)}\OperatorTok{/}\DecValTok{20000}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## excellent very good      good      fair      poor 
+##   0.23285   0.34860   0.28375   0.10095   0.03385
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{table}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{genhlth)[}\DecValTok{1}\NormalTok{]}\OperatorTok{/}\DecValTok{20000}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## excellent 
+##   0.23285
+\end{verbatim}
+
+\hypertarget{question-3}{%
+\subsection{Question 3}\label{question-3}}
+
+The mosaic shows the difference between long term smoking in men and
+women. We see that more men smoke 100 or more cigarettes in there
+lifetime when compared to woman.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{table}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{gender,cdc}\OperatorTok{$}\NormalTok{smoke100)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    
+##        0    1
+##   m 4547 5022
+##   f 6012 4419
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mosaicplot}\NormalTok{(}\KeywordTok{table}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{gender,cdc}\OperatorTok{$}\NormalTok{smoke100),}\DataTypeTok{main=}\StringTok{"Mosaic Plot of Gender vs. smoke100"}\NormalTok{)}
+\KeywordTok{title}\NormalTok{(}\DataTypeTok{ylab=}\StringTok{"Person Has Smoked More Than 100 Cigarettes in Lifetime"}\NormalTok{,}
+      \DataTypeTok{xlab=}\StringTok{"Persons Gender"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lab1_intro_to_data_files/figure-latex/cdc3-1.pdf}
+
+\hypertarget{question-4}{%
+\subsection{Question 4}\label{question-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{under23_and_smoke =}\StringTok{ }\KeywordTok{subset}\NormalTok{(cdc, smoke100}\OperatorTok{==}\DecValTok{1} \OperatorTok{&}\StringTok{ }\NormalTok{age}\OperatorTok{<}\DecValTok{23}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(under23_and_smoke)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       genhlth exerany hlthplan smoke100 height weight wtdesire age gender
+## 13  excellent       1        0        1     66    185      220  21      m
+## 37  very good       1        0        1     70    160      140  18      f
+## 96  excellent       1        1        1     74    175      200  22      m
+## 180      good       1        1        1     64    190      140  20      f
+## 182 very good       1        1        1     62     92       92  21      f
+## 240 very good       1        0        1     64    125      115  22      f
+\end{verbatim}
+
+\hypertarget{question-5}{%
+\subsection{Question 5}\label{question-5}}
+
+\includegraphics{Lab1_intro_to_data_files/figure-latex/cdc5-1.pdf}
+
+The box plot above shows the relationship between the persons BMI and
+overall health.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{boxplot}\NormalTok{(bmi }\OperatorTok{~}\StringTok{ }\NormalTok{cdc}\OperatorTok{$}\NormalTok{exerany,}
+        \DataTypeTok{main=}\StringTok{"Relationship Between BMI and Monthly Exercise"}\NormalTok{,}\DataTypeTok{xlab=}\StringTok{"Whether or Not Person Has Exercised in Past Month"}\NormalTok{,}\DataTypeTok{ylab=}\StringTok{"Persons BMI"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lab1_intro_to_data_files/figure-latex/cdc6-1.pdf}
+
+I chose monthly exercise because those who don't exercise tend to have a
+high BMI.The box plot shows that BMI is slightly lower in those who
+exercise.
+
+\hypertarget{own-questions}{%
+\subsection{Own Questions}\label{own-questions}}
+
+\hypertarget{question-1-1}{%
+\subsubsection{Question 1}\label{question-1-1}}
+
+The relationship shows how close the peoples weights are to their
+desired weights. a perfect 1/1 slop would represent everyone being at
+there desired weight. However, it is seen that the points aren't all at
+that slope.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{weight, cdc}\OperatorTok{$}\NormalTok{wtdesire,}
+     \DataTypeTok{xlab=}\StringTok{"Weight"}\NormalTok{,}\DataTypeTok{ylab=}\StringTok{"Desired Weight"}\NormalTok{,}\DataTypeTok{main=}\StringTok{"Plot of Persons Actual Weights vs. Desired Weights"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lab1_intro_to_data_files/figure-latex/cdc7-1.pdf}
+
+\hypertarget{question-2-1}{%
+\subsubsection{Question 2}\label{question-2-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wdiff =}\StringTok{ }\KeywordTok{abs}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{wtdesire}\OperatorTok{-}\NormalTok{cdc}\OperatorTok{$}\NormalTok{weight)}
+\KeywordTok{head}\NormalTok{(wdiff)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1]  0 10  0  8 20  0
+\end{verbatim}
+
+\hypertarget{question-3-1}{%
+\subsubsection{Question 3}\label{question-3-1}}
+
+wdiff is quatitative data. If it is 0 that means that the persons actual
+weight and desired weight are the same. If wdiff isn't 0 that is fow far
+the person is from there desired weight.
+
+\hypertarget{question-4-1}{%
+\subsubsection{Question 4}\label{question-4-1}}
+
+The histogram is right skewed. The mean of 10 shows that 50\% of the
+people are with in 10 pounds of there desired weight. Further more, the
+histogram shows that roughly 75\% of the people are within 25 pounds of
+there desired weight.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(wdiff)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00    0.00   10.00   17.11   25.00  500.00
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hist}\NormalTok{(wdiff)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lab1_intro_to_data_files/figure-latex/cdc9-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wdiff_under100=}\KeywordTok{subset}\NormalTok{(wdiff, wdiff}\OperatorTok{<=}\DecValTok{100}\NormalTok{)}
+\KeywordTok{summary}\NormalTok{(wdiff_under100)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00    0.00   10.00   15.99   23.00  100.00
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hist}\NormalTok{(wdiff_under100)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lab1_intro_to_data_files/figure-latex/cdc9-2.pdf}
+
+\hypertarget{question-5-1}{%
+\subsubsection{Question 5}\label{question-5-1}}
+
+The plot shows that men are closer to there desired weight. The women
+have a bigger spread.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cdc_under100=}\KeywordTok{subset}\NormalTok{(cdc,}
+                   \KeywordTok{abs}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{wtdesire}\OperatorTok{-}\NormalTok{cdc}\OperatorTok{$}\NormalTok{weight)}\OperatorTok{<=}\DecValTok{100}\NormalTok{)}
+\NormalTok{cdc_under100_male=}\KeywordTok{subset}\NormalTok{(cdc_under100, gender}\OperatorTok{==}\StringTok{'m'}\NormalTok{)}
+\NormalTok{cdc_under100_female=}\KeywordTok{subset}\NormalTok{(cdc_under100, gender}\OperatorTok{==}\StringTok{'f'}\NormalTok{)}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{abs}\NormalTok{(cdc_under100_male}\OperatorTok{$}\NormalTok{wtdesire}\OperatorTok{-}\NormalTok{cdc_under100_male}\OperatorTok{$}\NormalTok{weight))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00    0.00   10.00   13.96   20.00  100.00
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sd}\NormalTok{(}\KeywordTok{abs}\NormalTok{(cdc_under100_male}\OperatorTok{$}\NormalTok{wtdesire}\OperatorTok{-}\NormalTok{cdc_under100_male}\OperatorTok{$}\NormalTok{weight))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 17.24185
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{abs}\NormalTok{(cdc_under100_female}\OperatorTok{$}\NormalTok{wtdesire}\OperatorTok{-}\NormalTok{cdc_under100_female}\OperatorTok{$}\NormalTok{weight))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00    2.00   10.00   17.87   25.00  100.00
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sd}\NormalTok{(}\KeywordTok{abs}\NormalTok{(cdc_under100_female}\OperatorTok{$}\NormalTok{wtdesire}\OperatorTok{-}\NormalTok{cdc_under100_female}\OperatorTok{$}\NormalTok{weight))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 19.73895
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{boxplot}\NormalTok{(}\KeywordTok{abs}\NormalTok{(cdc_under100}\OperatorTok{$}\NormalTok{wtdesire}\OperatorTok{-}\NormalTok{cdc_under100}\OperatorTok{$}\NormalTok{weight) }\OperatorTok{~}\StringTok{ }\NormalTok{cdc_under100}\OperatorTok{$}\NormalTok{gender, }
+        \DataTypeTok{main=}\StringTok{"Difference Between Actual and Desired Weight, by Gender"}\NormalTok{,}
+        \DataTypeTok{xlab=}\StringTok{"Gender"}\NormalTok{,}\DataTypeTok{ylab=}\StringTok{"Difference Between Actual and Desired Weight"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lab1_intro_to_data_files/figure-latex/cdc10-1.pdf}
+
+\hypertarget{question-6}{%
+\subsubsection{Question 6}\label{question-6}}
+
+70.76\% of peoples weight fall within one SD of the mean weight
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{weight_mean =}\StringTok{ }\KeywordTok{mean}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{weight)}
+\NormalTok{weight_sd =}\StringTok{ }\KeywordTok{sd}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{weight)}
+\NormalTok{weight_mean}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 169.683
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{weight_sd}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 40.08097
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sum}\NormalTok{(cdc}\OperatorTok{$}\NormalTok{weight}\OperatorTok{>=}\NormalTok{(weight_mean}\OperatorTok{-}\NormalTok{weight_sd) }\OperatorTok{&}\StringTok{ }\NormalTok{cdc}\OperatorTok{$}\NormalTok{weight}\OperatorTok{<=}\NormalTok{(weight_mean}\OperatorTok{+}\NormalTok{weight_sd))}\OperatorTok{/}\KeywordTok{nrow}\NormalTok{(cdc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.7076
+\end{verbatim}
+
+
+\end{document}

@@ -1,0 +1,178 @@
+---
+title: "Lab 4"
+author: "Zachary Goodsell"
+date: "10/20/2019"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("prettydoc")
+```
+
+## Part A
+In the SienaMath-height.csv file, µ = 68 inches and σ = 3.763863 inches.
+
+```{r a, echo=FALSE}
+hgt=read.csv("SienaMath-height.csv")
+mean(hgt$height)
+sd(hgt$heigh)
+```
+
+## Part B
+
+The sample of the SienaMath-height.csv file is -
+
+```{r b, echo=FALSE}
+s=sample(hgt$height,3)
+s
+```
+
+The mean of this sample is -
+
+```{r b2, echo=FALSE}
+mean(s)
+```
+
+## Part C
+
+Here the final value is the mean of all the means of the data.
+
+```{r c, echo=FALSE}
+MeanXbar=numeric(10)
+for (i in 1:10){smp=sample(hgt$height,3);MeanXbar[i]=mean(smp)}
+
+MeanXbar
+
+mean(MeanXbar)
+```
+
+## Part D
+
+```{r d1, echo=FALSE}
+MeanXbar=numeric(100)
+for (i in 1:100){smp=sample(hgt$height,3);MeanXbar[i]=mean(smp)}
+hist(MeanXbar,col="orange", xlab="Mean of Samples",main="")
+```
+
+The mean of the sample means is -
+
+```{r d2, echo=FALSE}
+mean(MeanXbar)
+```
+
+The standard deviation of the sample means is -
+
+```{r d3, echo=FALSE}
+sd(MeanXbar)
+```
+
+The approximate mean of the sample means is -
+
+```{r d4, echo=FALSE}
+mean(hgt$height)
+```
+
+
+The approximate standard deviation of the sample means is -
+
+```{r d5, echo=FALSE}
+sd(hgt$height)/sqrt(3)
+```
+
+These values compare such that µ is the mean of the histogram and √σ/n is one standard deviation.
+
+## Part E
+
+```{r e1, echo=FALSE}
+MeanXbar=numeric(5984)
+for (i in 1:5984){smp=sample(hgt$height,3);MeanXbar[i]=mean(smp)}
+hist(MeanXbar,col="green", xlab="Mean of Samples",main="")
+```
+
+The mean of the sample means is -
+
+```{r e2, echo=FALSE}
+mean(MeanXbar)
+```
+
+The standard deviation of the sample means is -
+
+```{r e3, echo=FALSE}
+sd(MeanXbar)
+```
+
+The approximate mean of the sample means is -
+
+```{r e4, echo=FALSE}
+mean(hgt$height)
+```
+
+
+The approximate standard deviation of the sample means is -
+
+```{r e5, echo=FALSE}
+sd(hgt$height)/sqrt(3)
+```
+
+## Part F
+
+### Sample Size = 1
+```{r f1, echo=FALSE}
+xbar=numeric(1000)
+for (i in 1:1000){x=runif(n=1,min=0,max=1);xbar[i]=mean(x)}
+hist(xbar,col="yellow",main="sample size=1",xlab="sample mean Xbar")
+```
+
+The mean is - 
+
+```{r f2, echo=FALSE}
+mean(xbar)
+```
+
+The standard deviation is -
+
+```{r f3, echo=FALSE}
+sd(xbar)
+```
+
+### Sample Size = 30
+```{r f4, echo=FALSE}
+xbar=numeric(1000)
+for (i in 1:1000){x=runif(n=30,min=0,max=1);xbar[i]=mean(x)}
+hist(xbar,col="red",main="sample size=30",xlab="sample mean Xbar")
+```
+
+The mean is - 
+
+```{r f5, echo=FALSE}
+mean(xbar)
+```
+
+The standard deviation is -
+
+```{r f6, echo=FALSE}
+sd(xbar)
+```
+
+### Sample Size = 1000
+```{r f7, echo=FALSE}
+xbar=numeric(1000)
+for (i in 1:1000){x=runif(n=1000,min=0,max=1);xbar[i]=mean(x)}
+hist(xbar,col="green",main="sample size=1000",xlab="sample mean Xbar")
+```
+
+The mean is - 
+
+```{r f8, echo=FALSE}
+mean(xbar)
+```
+
+The standard deviation is -
+
+```{r f9, echo=FALSE}
+sd(xbar)
+```

@@ -1,0 +1,73 @@
+---
+title: "Math 275 Homework 2"
+author: "Kursad Tosun"
+date: "September 24, 2019"
+output:
+  html_document:
+    highlight: pygments
+    keep_md: no
+    theme: cerulean
+  pdf_document:
+    fig_caption: no
+  word_document: default
+---
+
+```{r setup,  include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**1.** Write your answer in here.
+
+* item 1
+* item 2
+
+**2.**  Write your answer in here. You can use the following table, or read Lab-RMarkdown for better table options.
+
+Table Header | Second Header  
+------------- | -------------  
+Table Cell | Cell 2   
+Cell 3 | Cell 4    
+
+**3.**  Write your answer in here. The following R code chunk will display both the R code and results.   
+
+```{r, warning = FALSE, fig.align='center', fig.cap='Histogram of hospital stays', out.width = "50%"}
+library(readxl)
+heart <- read_excel("Heart_attack_stays.xlsx")
+head(heart)
+hist(heart$Stay, breaks=30, xlab ='Stay (days)', ylab='Number of Female Patients', main='')
+summary(heart)
+```
+
+Since the variables Sex and Hospital are categorical, we need encode them as a factor.  
+```{r, warning = FALSE, fig.align='center', fig.cap='Histogram of hospital stays', out.width = "50%"}
+heart$Sex=factor(heart$Sex)
+heart$Hospital=factor(heart$Hospital)
+summary(heart)
+```
+
+***
+# Your answer should be short, clear and descriptive.
+
+Let's consider a hypothetical homework question. 
+
+**How many patients stayed in the NYU hospital?**
+
+Your answer should include
+
+1. a related R code and output (do not include unnecessary output), 
+2. answer of the question.
+
+**Solution.**
+```{r, warning = FALSE}
+summary(heart$Hospital)
+```
+
+Sixty-five patients were stayed in the NYU hospital.
+
+
+
+**Note.** Your answer, R code and output should be short, clear and descriptive. If we talk about this specific example, your solution should not contain any results other than `Hospital`. Do **NOT include**  all the summary statistics in your answer. 
+
+***
+
+

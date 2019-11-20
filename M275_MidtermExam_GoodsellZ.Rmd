@@ -1,0 +1,105 @@
+---
+title: "Math 275 Midterm Exam"
+author: "Zachary Goodsell"
+date: "10/23/2019"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("prettydoc")
+#install.packages("faraway")
+#install.packages("devtools")
+library(devtools)
+install_github("kassambara/easyGgplot2")
+library(easyGgplot2)
+#install.packages("dplyr")
+library("dplyr")
+#install.packages("htmltools")
+library(htmltools)
+```
+
+## Question 1
+
+Use this command to install the faraway package - install.packages("faraway").
+
+## Question 2
+
+Use the following command to call the faraway package from library.
+
+```{r q2}
+library("faraway")
+```
+
+## Question 3
+
+In order to export the prostate data from R to CSV file and save into the computer as newprostatedata.csv we use the following command.
+
+```{r q31}
+write.csv(prostate, "newprostatedata.csv")
+```
+
+In order to read in the newprostatedata.csv we created and save it as newpros, we use the following command.
+
+```{r q32}
+newpros <- read.csv("newprostatedata.csv", header = TRUE, sep=",")[,2:10]
+```
+
+## Question 4
+
+There are a total of 35 patients with a Gleason score of 6.
+
+```{r q4, echo=FALSE, include=FALSE}
+newpros$gleason=factor(newpros$gleason)
+summary(newpros$gleason)[1]
+
+```
+
+## Question 5
+
+```{r q5, echo=FALSE}
+newpros$svi=factor(newpros$svi)
+
+newpros <- newpros %>% mutate(svi=factor(svi,levels = c("1", "0"),labels = c("yes", "no")))
+#summary(newpros$svi)
+
+boxplot(newpros$lpsa~newpros$svi, medcol = "sienna", col = c("light blue","tomato"), ylab = "svi Group", xlab = "log(psa)", title = "a", main ="Box plot of log(psa) for svi Groups",horizontal = TRUE,boxwex=0.3,las=1)
+```
+
+## Question 6
+
+```{r q6, echo=FALSE}
+
+ggplot2.histogram(data=newpros, xName='lpsa', groupName='svi', legendPosition="right",
+    alpha=0.5, addDensity=TRUE, 
+    addMeanLine=TRUE, meanLineSize=1.5, bins = 13, xtitle = "log(psa)",
+    ytitle = "Frequency (%)",xtitleFont=c(13,"bold", "#993333"), 
+    ytitleFont=c(13,"bold", "#993333"))
+
+```
+
+## Question 7
+
+A majority of people without SVI have a log(psa) value between 1.25 and 3.25, with the mean being 2.2. For people with SVI, a majority have a log(psa) value between 2.75 and 4.25 with a mean of 3.7.
+
+## Question 8
+
+For the group with SVI, they had the following - a min of 2.214, 1st quartile of 3.056, median of 3.565, 3rd quartile of 4.130, and a max of 5.583. The mean and standard deviation of this group were 3.715 and 0.9251224. With this, 95% of the group falls between 1.864755 and 5.565245. For the group without SVI, they had the following - a min of -0.4308, 1st quartile of 1.5891, median of 2.2345, 3rd quartile of 2.8079, and a max of 4.0298. The mean and standard deviation of this group were 2.1366 and 0.9646401. With this, 95% of the group falls between 0.2073198 and 4.06588. 
+
+\newline
+
+The group without SVI has a bi model distribution, while the group with SVI has a normal distribution. We also see that half the people without SVI have a higher log(psa) then all of the people that have SVI. With all of this we can come to the conclusion that people with SVI tend to have a higher log(psa) then those without.
+
+
+```{r q8, include = FALSE}
+svi <- newpros$svi == "yes"
+summary(newpros[svi,]$lpsa)
+sd(newpros[svi,]$lpsa)
+
+sviNo <- newpros$svi == "no"
+summary(newpros[sviNo,]$lpsa)
+sd(newpros[sviNo,]$lpsa)
+```

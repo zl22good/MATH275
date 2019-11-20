@@ -1,0 +1,133 @@
+---
+title: "Math 275 Lab 1 Intro to Data"
+author: "Zachary Goodsell"
+date: "9/24/2019"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("http://www.openintro.org/stat/data/cdc.R")
+
+```
+
+## Question 1
+There are 20,000 cases and 9 variables for each of these cases. Data types - genhlth:categorical, exerany:binary, hlthplan:binary,smoke100:binary, height:continuous,weight:continuous,wtdesire:continuous, age:continuous,gender:binary
+```{r cdc1}
+names(cdc)
+```
+
+
+## Question 2
+The interquartile range of height is 6. The interquartile range of age is 26. The gender frequency is 47.8% for males and 52.1% for females. The exerany frequency is 25.4% for 0 and 74.6% for 1. 0 is for no monthly exercise and 1 is for monthly exercise. There are 9569 males in the sample. For participants with excellent health the percent is 23.3%.
+```{r cdc2}
+summary(cdc$height)
+summary(cdc$age)
+iqr_height=summary(cdc$height)[5]-summary(cdc$height)[2]
+iqr_height
+#Interquartile range of height is 6
+iqr_age=summary(cdc$age)[5]-summary(cdc$age)[2]
+iqr_age
+#Interquartile range of age is 26
+gender=table(cdc$gender)
+genderFreq = gender/20000
+genderFreq
+barplot(genderFreq)
+exerany=table(cdc$exerany)
+exeranyFreq = exerany/20000
+exeranyFreq
+barplot(exeranyFreq)
+table(cdc$gender)
+numMales = table(cdc$gender)[1]
+numMales
+table(cdc$genhlth)/20000
+table(cdc$genhlth)[1]/20000
+```
+## Question 3
+The mosaic shows the difference between long term smoking in men and women. We see that more men smoke 100 or more cigarettes in there lifetime when compared to woman.
+```{r cdc3}
+table(cdc$gender,cdc$smoke100)
+mosaicplot(table(cdc$gender,cdc$smoke100),main="Mosaic Plot of Gender vs. smoke100")
+title(ylab="Person Has Smoked More Than 100 Cigarettes in Lifetime",
+      xlab="Persons Gender")
+```
+
+## Question 4
+```{r cdc4}
+under23_and_smoke = subset(cdc, smoke100==1 & age<23)
+head(under23_and_smoke)
+```
+
+## Question 5
+```{r cdc5, echo=FALSE}
+bmi <- (cdc$weight / cdc$height^2) * 703
+boxplot(bmi ~ cdc$genhlth)
+```
+
+The box plot above shows the relationship between the persons BMI and overall health.
+
+```{r cdc6}
+
+boxplot(bmi ~ cdc$exerany,
+        main="Relationship Between BMI and Monthly Exercise",xlab="Whether or Not Person Has Exercised in Past Month",ylab="Persons BMI")
+```
+
+I chose monthly exercise because those who don't exercise tend to have a high BMI.The box plot shows that BMI is slightly lower in those who exercise.
+
+## Own Questions
+### Question 1
+The relationship shows how close the peoples weights are to their desired weights. a perfect 1/1 slop would represent everyone being at there desired weight.  However, it is seen that the points aren't all at that slope.
+```{r cdc7}
+plot(cdc$weight, cdc$wtdesire,
+     xlab="Weight",ylab="Desired Weight",main="Plot of Persons Actual Weights vs. Desired Weights")
+```
+
+### Question 2
+```{r cdc8}
+wdiff = abs(cdc$wtdesire-cdc$weight)
+head(wdiff)
+```
+
+### Question 3
+wdiff is quatitative data. If it is 0 that means that the persons actual weight and desired weight are the same. If wdiff isn't 0 that is fow far the person is from there desired weight.
+
+### Question 4
+The histogram is right skewed. The mean of 10 shows that 50% of the people are with in 10 pounds of there desired weight. Further more, the histogram shows that roughly 75% of the people are within 25 pounds of there desired weight.
+```{r cdc9}
+summary(wdiff)
+hist(wdiff)
+wdiff_under100=subset(wdiff, wdiff<=100)
+summary(wdiff_under100)
+hist(wdiff_under100)
+```
+
+### Question 5
+The plot shows that men are closer to there desired weight. The women have a bigger spread.
+```{r cdc10}
+cdc_under100=subset(cdc,
+                   abs(cdc$wtdesire-cdc$weight)<=100)
+cdc_under100_male=subset(cdc_under100, gender=='m')
+cdc_under100_female=subset(cdc_under100, gender=='f')
+summary(abs(cdc_under100_male$wtdesire-cdc_under100_male$weight))
+sd(abs(cdc_under100_male$wtdesire-cdc_under100_male$weight))
+summary(abs(cdc_under100_female$wtdesire-cdc_under100_female$weight))
+sd(abs(cdc_under100_female$wtdesire-cdc_under100_female$weight))
+boxplot(abs(cdc_under100$wtdesire-cdc_under100$weight) ~ cdc_under100$gender, 
+        main="Difference Between Actual and Desired Weight, by Gender",
+        xlab="Gender",ylab="Difference Between Actual and Desired Weight")
+```
+
+### Question 6
+70.76% of peoples weight fall within one SD of the mean weight
+```{r cdc11}
+weight_mean = mean(cdc$weight)
+weight_sd = sd(cdc$weight)
+weight_mean
+weight_sd
+sum(cdc$weight>=(weight_mean-weight_sd) & cdc$weight<=(weight_mean+weight_sd))/nrow(cdc)
+
+```
