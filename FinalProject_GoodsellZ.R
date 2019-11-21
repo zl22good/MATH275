@@ -1,22 +1,25 @@
 library(dplyr)
-library(stringr)
-library(readr)
-library(lubridate)
+#library(stringr)
+#library(readr)
+#library(lubridate)
 
-
+#read in the csv file
 firedata <- read.csv("PropertyLoss.csv")
-#head(firedata)
-firedata$Incident.Num <- strtoi(substr(firedata$Inci_type,0,3))
-#head(firedata)
-firedata$Incident.Type <- transform(firedata, c= ifelse(Incident.Num < "124", "Structure Fire", ifelse(Incident.Num < "139", "Vehicle Fire",ifelse(Incident.Num < "165", "Outside Fire", "Not a Fire"))))
-#head(firedata)
-firedata$Month<- firedata$Alm_Date
-#head(firedata)
-#typeof(firedata$Month)
 
-firedata$Month <-  months(as.Date(firedata$Month, "%m/%d/%Y"))
-firedata$Season<- transform(firedata, c= ifelse(firedata$Month == "January", "Winter",
-                  ifelse(firedata$Month == "Febuary", "Winter", 
+#parse out the incident numbers
+firedata$Incident.Num <- strtoi(substr(firedata$Inci_type,0,3))
+
+#collum with the incident type
+firedata <- transform(firedata,Incident.Type = ifelse(Incident.Num < "124", "Structure Fire", 
+                   ifelse(Incident.Num < "139", "Vehicle Fire",
+                   ifelse(Incident.Num < "165", "Outside Fire", "Not a Fire"))))
+
+#creat the month collum
+firedata$Month <-  months(as.Date(firedata$Alm_Date, "%m/%d/%Y"))
+
+#Turn month into the season
+firedata <- transform(firedata, Season= ifelse(firedata$Month == "January", "Winter",
+                  ifelse(firedata$Month == "February", "Winter", 
                   ifelse(firedata$Month == "March", "Spring",
                   ifelse(firedata$Month == "April", "Spring",
                   ifelse(firedata$Month == "May", "Spring",
@@ -27,74 +30,79 @@ firedata$Season<- transform(firedata, c= ifelse(firedata$Month == "January", "Wi
                   ifelse(firedata$Month == "October", "Fall",
                   ifelse(firedata$Month == "November", "Fall",
                   ifelse(firedata$Month == "December", "Winter","NULL")))))))))))))
+
+#Create the percent loss
 firedata$PercentLoss <- as.numeric(firedata$Pre_Inci_Value) / as.numeric(firedata$Total_Loss)
-                                                
+
+#filter out non fires
+firedata <- filter(firedata, Incident.Type != "Not a Fire")
+      
 head(firedata)
 
-
-firedata <- read.csv("PropertyLossEdited.csv")
-head(firedata)
-#Season
-head(firedata[3])
-#Type
-head(firedata[6])
-
-library(dplyr)
-
-
+#old data
+#firedata <- read.csv("PropertyLossEdited.csv")
 
 #Anova test of total loss based on season
-aovSeason = aov(Total_Loss ~ Season, data = firedata)
+aovSeason = aov(PercentLoss ~ Season, data = firedata)
 summary(aovSeason)
 
 #Anova test of total loss based on Incident.Type
-aovI = aov(Total_Loss ~ Incident.Type, data = firedata)
+aovI = aov(PercentLoss ~ Incident.Type, data = firedata)
 summary(aovI)
 
-#Total loss summary of each season
+#Percent loss summary of each season
 firedata %>%
   group_by(Season) %>%
-  summarize(Md = median(Total_Loss), Mean = mean(Total_Loss), SD = sd(Total_Loss), N = n())
+  summarize(Md = median(PercentLoss), Mean = mean(PercentLoss), SD = sd(PercentLoss), N = n())
 
 #Winter Subset
 winter <- firedata %>%
   filter(Season == "Winter") %>%
   group_by(Season) %>%
-  select(Season, Incident.Type,Total_Loss)
+  select(Season, Incident.Type,Total_Loss,PercentLoss)
 
 #Spring Subset
 spring <- firedata %>%
   filter(Season == "Spring") %>%
   group_by(Season) %>%
-  select(Season, Incident.Type,Total_Loss)
+  select(Season, Incident.Type,Total_Loss,PercentLoss)
 
 #Summer Subset
 summer <- firedata %>%
   filter(Season == "Summer") %>%
   group_by(Season) %>%
-  select(Season, Incident.Type,Total_Loss)
+  select(Season, Incident.Type,Total_Loss,PercentLoss)
 
 #Fall Subset
 fall <- firedata %>%
-  filter(Season == "Autumn") %>%
+  filter(Season == "Fall") %>%
   group_by(Season) %>%
-  select(Season, Incident.Type,Total_Loss)
+  select(Season, Incident.Type,Total_Loss,PercentLoss)
 
 #Box plot of all the subsets
-boxplot(winter$Total_Loss,spring$Total_Loss,summer$Total_Loss,fall$Total_Loss,
+boxplot(winter$PercentLoss,spring$PercentLoss,summer$PercentLoss,fall$PercentLoss,
         names = c("Winter","Spring","Summer","Fall"), xlab = "Season", ylab = "Total Loss")
 
 #T test, winter and spring 
-t.test(winter$Total_Loss,spring$Total_Loss)
+t.test(winter$PercentLoss,spring$PercentLoss)
 
 #T test, winter and summer 
-t.test(winter$Total_Loss,summer$Total_Loss)
+t.test(winter$PercentLoss,summer$PercentLoss)
 
 #T test, winter and fall 
-t.test(winter$Total_Loss,fall$Total_Loss)
+t.test(winter$PercentLoss,fall$PercentLoss)
+
+#T test, spring and summer 
+t.test(spring$PercentLoss,summer$PercentLoss)
+
+#T test, spring and fall 
+t.test(spring$PercentLoss,fall$PercentLoss)
+
+#T test, summer and fall 
+t.test(summer$PercentLoss,fall$PercentLoss)
 
 
-#Total loss summary of each season based on incident type
+#Percent loss summary of each season based on incident type
 firedata %>%
   group_by(Season, Incident.Type) %>%
-  summarize(Md = median(Total_Loss), Mean = mean(Total_Loss), SD = sd(Total_Loss), N = n())
+  summarize(Md = median(PercentLoss), Mean = mean(PercentLoss), SD = sd(PercentLoss), N = n())
