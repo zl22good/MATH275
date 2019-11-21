@@ -10,13 +10,26 @@ firedata$Incident.Num <- strtoi(substr(firedata$Inci_type,0,3))
 #head(firedata)
 firedata$Incident.Type <- transform(firedata, c= ifelse(Incident.Num < "124", "Structure Fire", ifelse(Incident.Num < "139", "Vehicle Fire",ifelse(Incident.Num < "165", "Outside Fire", "Not a Fire"))))
 #head(firedata)
-firedata$Month<- toString(firedata$Alm_Date)
+firedata$Month<- firedata$Alm_Date
+#head(firedata)
+#typeof(firedata$Month)
+
+firedata$Month <-  months(as.Date(firedata$Month, "%m/%d/%Y"))
+firedata$Season<- transform(firedata, c= ifelse(firedata$Month == "January", "Winter",
+                  ifelse(firedata$Month == "Febuary", "Winter", 
+                  ifelse(firedata$Month == "March", "Spring",
+                  ifelse(firedata$Month == "April", "Spring",
+                  ifelse(firedata$Month == "May", "Spring",
+                  ifelse(firedata$Month == "June", "Summer",
+                  ifelse(firedata$Month == "July", "Summer",
+                  ifelse(firedata$Month == "August", "Summer",
+                  ifelse(firedata$Month == "September", "Fall",
+                  ifelse(firedata$Month == "October", "Fall",
+                  ifelse(firedata$Month == "November", "Fall",
+                  ifelse(firedata$Month == "December", "Winter","NULL")))))))))))))
+firedata$PercentLoss <- as.numeric(firedata$Pre_Inci_Value) / as.numeric(firedata$Total_Loss)
+                                                
 head(firedata)
-
-
-for (i in length(firedata$Month)) {
-  firedata$Month[i] = "a"
-}
 
 
 firedata <- read.csv("PropertyLossEdited.csv")
