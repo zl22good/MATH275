@@ -1,0 +1,783 @@
+---
+title: "Final Exam Part 1"
+author: "Zachary Goodsell"
+date: "11/24/2019"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("htmltools")
+#install.packages("prettydoc")
+library(htmltools)
+```
+
+# Correlation and Regression
+
+## Visualizing two variables
+
+Scatterplots are the most common and effective tools for visualizing the relationship between two numeric variables.
+
+The ncbirths dataset is a random sample of 1,000 cases taken from a larger dataset collected in 2004. Each case describes the birth of a single child born in North Carolina, along with various characteristics of the child (e.g. birth weight, length of gestation, etc.), the child’s mother (e.g. age, weight gained during pregnancy, smoking habits, etc.) and the child’s father (e.g. age). You can view the help file for these data by running ?ncbirths in the console.
+
+```{r c1}
+library(openintro)
+DT::datatable(ncbirths)
+```
+
+#### Exercise
+
+Using the ncbirths dataset, make a scatterplot using ggplot() to illustrate how the birth weight of these babies varies according to the number of weeks of gestation.
+
+```{r c2}
+# Scatterplot of weight vs. weeks
+library(ggplot2)
+ggplot(data = ncbirths, aes(y = weight, x = weeks)) +
+  geom_point(alpha = 0.2) + 
+  theme_bw()
+```
+
+### Boxplots as discretized/conditioned scatterplots
+
+If it is helpful, you can think of boxplots as scatterplots for which the variable on the x-axis has been discretized.
+
+The cut() function takes two arguments: the continuous variable you want to discretize and the number of breaks that you want to make in that continuous variable in order to discretize it.
+
+#### Exercise
+
+Using the ncbirths dataset again, make a boxplot illustrating how the birth weight of these babies varies according to the number of weeks of gestation. This time, use the cut() function to discretize the x-variable into six intervals (i.e. five breaks).
+
+```{r c3}
+# Boxplot of weight vs. weeks
+ggplot(data = ncbirths, 
+       aes(x = cut(weeks, breaks = 5), y = weight)) + 
+       geom_boxplot() + 
+       theme_bw()
+```
+
+### Creating scatterplots
+
+Creating scatterplots is simple and they are so useful that is it worthwhile to expose yourself to many examples. Over time, you will gain familiarity with the types of patterns that you see. You will begin to recognize how scatterplots can reveal the nature of the relationship between two variables.
+
+In this exercise, and throughout this chapter, we will be using several datasets listed below. These data are available through the openintro package. Briefly:
+
+The mammals dataset contains information about 39 different species of mammals, including their body weight, brain weight, gestation time, and a few other variables.
+
+The mlbBat10 dataset contains batting statistics for 1,199 Major League Baseball players during the 2010 season.
+
+The bdims dataset contains body girth and skeletal diameter measurements for 507 physically active individuals.
+
+The smoking dataset contains information on the smoking habits of 1,691 citizens of the United Kingdom.
+
+To see more thorough documentation, use the ? or help() functions.
+
+#### Exercise
+
+Using the mammals dataset, create a scatterplot illustrating how the brain weight of a mammal varies as a function of its body weight.
+
+```{r c4}
+library(openintro)
+# Mammals scatterplot
+ggplot(data = mammals, aes(y = BrainWt, x = BodyWt)) +
+  geom_point() + 
+  theme_bw() + 
+  labs(x = "Body Weight (kg)", y = "Brain weight (kg)")
+```
+
+Using the mlbBat10 dataset, create a scatterplot illustrating how the slugging percentage (SLG) of a player varies as a function of his on-base percentage (OBP).
+
+```{r c5}
+# Baseball player scatterplot
+p1 <- ggplot(data = mlbBat10, aes(y = SLG, x = OBP)) +
+  geom_point(alpha = 0.10) + 
+  theme_bw() + 
+  labs(y = "Slugging percentage (TB/AB)", x = "On base percentage" )
+p1
+```
+
+Using the bdims dataset, create a scatterplot illustrating how a person’s weight varies as a function of their height. Use color to separate by sex, which you’ll need to coerce to a factor with factor().
+
+```{r c6}
+# Body dimensions scatterplot
+p3 <- ggplot(data = bdims, aes(y = wgt, x= hgt, color = factor(sex))) + 
+  geom_point() + 
+  theme_bw() + 
+  labs(y = "Weight (kg)", x = "Height (cm)")
+p3
+```
+
+Using the smoking dataset, create a scatterplot illustrating how the amount that a person smokes on weekdays varies as a function of their age.
+
+```{r c7}
+# Smoking scatterplot
+ggplot(data = smoking, aes(y = amtWeekdays, x = age)) + 
+  geom_point(alpha = 0.2) + 
+  theme_bw() + 
+  labs(x = "Age", y = "Number of cigarettes smoked per day on weekdays")
+```
+
+#Skipped Characterizing scatterplots no code
+
+### Transformations
+
+The relationship between two variables may not be linear. In these cases we can sometimes see strange and even inscrutable patterns in a scatterplot of the data. Sometimes there really is no meaningful relationship between the two variables. Other times, a careful transformation of one or both of the variables can reveal a clear relationship.
+
+Recall the bizarre pattern that you saw in the scatterplot between brain weight and body weight among mammals in a previous exercise. Can we use transformations to clarify this relationship?
+
+ggplot2 provides several different mechanisms for viewing transformed relationships. The coord_trans() function transforms the coordinates of the plot. Alternatively, the scale_x_log10() and scale_y_log10() functions perform a base-10 log transformation of each axis. Note the differences in the appearance of the axes.
+
+#### Exercise
+
+The mammals dataset is available in your workspace.
+
+Use coord_trans() to create a scatterplot showing how a mammal’s brain weight varies as a function of its body weight, where both the x and y axes are on a "log10" scale.
+
+```{r c8}
+# Scatterplot with coord_trans()
+ggplot(data = mammals, aes(y = BrainWt, x = BodyWt)) + 
+  geom_point() + 
+  coord_trans(x = "log10", y = "log10") + 
+  theme_bw() +
+  labs(x = "Total body weight of the mammal (in kg)",
+       y = "Brain weight of the mammal (in kg)")
+```
+
+Use scale_x_log10() and scale_y_log10() to achieve the same effect but with different axis labels and grid lines.
+
+```{r c9}
+# Scatterplot with scale_x_log10() and scale_y_log10()
+p4 <- ggplot(data = mammals, aes(x = BodyWt, y = BrainWt)) +
+  geom_point() +
+  scale_x_log10() + 
+  scale_y_log10() + 
+  theme_bw() + 
+  labs(x = "Total body weight of the mammal (in kg)",
+       y = "Brain weight of the mammal (in kg)")
+p4
+```
+
+### Identifying outliers
+
+In Chapter 6, we will discuss how outliers can affect the results of a linear regression model and how we can deal with them. For now, it is enough to simply identify them and note how the relationship between two variables may change as a result of removing outliers.
+
+Recall that in the baseball example earlier in the chapter, most of the points were clustered in the lower left corner of the plot, making it difficult to see the general pattern of the majority of the data. This difficulty was caused by a few outlying players whose on-base percentages (OBPs) were exceptionally high. These values are present in our dataset only because these players had very few batting opportunities.
+
+Both OBP and SLG are known as rate statistics, since they measure the frequency of certain events (as opposed to their count). In order to compare these rates sensibly, it makes sense to include only players with a reasonable number of opportunities, so that these observed rates have the chance to approach their long-run frequencies.
+
+In Major League Baseball, batters qualify for the batting title only if they have 3.1 plate appearances per game. This translates into roughly 502 plate appearances in a 162-game season. The mlbBat10 dataset does not include plate appearances as a variable, but we can use at-bats (AB) – which constitute a subset of plate appearances – as a proxy.
+
+#### Exercise
+
+Use filter() to create a scatterplot for SLG as a function of OBP among players who had at least 200 at-bats.
+
+```{r c10}
+library(dplyr)
+# Scatterplot of SLG vs. OBP
+ntib <- mlbBat10 %>% 
+  filter(AB >= 200)
+p2 <- ggplot(data = ntib, aes(y = SLG, x = OBP)) + 
+  geom_point() +
+  theme_bw()
+p2
+```
+
+Find the row of mlbBat10 corresponding to the one player with at least 200 at-bats whose OBP was below 0.200.
+
+```{r c11}
+# Identify the outlying player
+mlbBat10 %>% 
+  filter(AB >=200, OBP < 0.2)
+```
+
+## Correlation
+
+#Skipped Understanding correlation scale and Understanding correlation sign no code
+
+### Computing correlation
+
+The cor(x, y) function will compute the Pearson product-moment correlation between variables, x and y. Since this quantity is symmetric with respect to x and y, it doesn’t matter in which order you put the variables.
+
+At the same time, the cor() function is very conservative when it encounters missing data (e.g. NAs). The use argument allows you to override the default behavior of returning NA whenever any of the values encountered is NA. Setting the use argument to "pairwise.complete.obs" allows cor() to compute the correlation coefficient for those observations where the values of x and y are both not missing.
+
+#### Exercise
+
+Use cor() to compute the correlation between the birthweight of babies in the ncbirths dataset and their mother’s age. There is no missing data in either variable.
+
+```{r c12}
+library(openintro)
+DT::datatable(ncbirths)
+```
+
+```{r c13}
+# Compute correlation
+ncbirths %>%
+  summarize(N = n(), r = cor(weight, mage))
+```
+
+Compute the correlation between the birthweight and the number of weeks of gestation for all non-missing pairs.
+
+```{r c14}
+# Compute correlation for all non-missing pairs
+ncbirths %>%
+  summarize(N = n(), r = cor(weight, weeks, 
+                             use = "pairwise.complete.obs"))
+```
+
+### Exploring Anscombe
+
+In 1973, Francis Anscombe famously created four datasets with remarkably similar numerical properties, but obviously different graphic relationships. The Anscombe dataset contains the x and y coordinates for these four datasets, along with a grouping variable, set, that distinguishes the quartet.
+
+It may be helpful to remind yourself of the graphic relationship by viewing the four scatterplots:
+       
+```{r c15}
+dat <- datasets::anscombe
+Anscombe <- data.frame(
+    set  = rep(1:4, each = 11),
+    x = unlist(dat[ ,c(1:4)]),
+    y = unlist(dat[ ,c(5:8)])
+    )
+rownames(Anscombe) <- NULL
+head(Anscombe)
+
+#
+ggplot(data = Anscombe, aes(x = x, y = y)) +
+  geom_point() +
+  facet_wrap(~ set) + 
+  theme_bw()
+```
+
+#### Exercise
+
+For each of the four sets of data points in the Anscombe dataset, compute the following in the order specified. Don’t worry about naming any of the variables other than the first in your call to summarize().
+
+Number of observations, N
+
+Mean of x
+
+Standard deviation of x
+
+Mean of y
+
+Standard deviation of y
+
+Correlation coefficient between x and y
+
+```{r c16}
+# Compute properties of Anscombe
+Anscombe %>%
+  group_by(set) %>%
+  summarize(N = n(), mean(x), sd(x), mean(y), sd(y), cor(x, y))
+```
+
+### Perception of correlation
+
+Recall Figure 2.1 which displays the poverty rate of counties in the United States and the high school graduation rate in those counties from the previous chapter. Which of the following values is the correct correlation between poverty rate and high school graduation rate?
+
+-0.861
+-0.681
+-0.186
+0.186
+0.681
+0.861
+
+```{r c17}
+library(openintro)
+countyComplete %>% 
+  summarize(r = cor(poverty, hs_grad)) %>% 
+  round(3)
+```
+
+### Perception of correlation (2)
+
+Estimating the value of the correlation coefficient between two quantities from their scatterplot can be tricky. Statisticians have shown that people’s perception of the strength of these relationships can be influenced by design choices like the x and y scales.
+
+Nevertheless, with some practice your perception of correlation will improve. Study the four scatterplots in Figure 3.1, each of which you’ve seen in a previous exercise.
+
+```{r c18}
+library(gridExtra)
+grid.arrange(p1, p2, p3, p4)
+```
+
+Jot down your best estimate of the value of the correlation coefficient between each pair of variables. Then, compare these values to the actual values you compute in this exercise.
+
+#### Exercise
+
+Each graph in the plotting window corresponds to an instruction below. Compute the correlation between…
+
+OBP and SLG for all players in the mlbBat10 dataset.
+
+```{r c19}
+# Correlation for all baseball players
+mlbBat10 %>% 
+  summarize(r = cor(OBP, SLG))
+```
+
+OBP and SLG for all players in the mlbBat10 dataset with at least 200 at-bats.
+
+```{r c20}
+# Correlation for all players with at least 200 ABs
+mlbBat10 %>% 
+  filter(AB >= 200) %>% 
+  summarize(r = cor(OBP, SLG))
+```
+
+Height and weight for each sex in the bdims dataset.
+
+```{r c21}
+# Correlation of body dimensions
+bdims %>%
+  group_by(sex) %>%
+  summarize(N = n(), r = cor(hgt, wgt))
+```
+
+Body weight and brain weight for all species of mammals. Alongside this computation, compute the correlation between the same two quantities after taking their natural logarithms.
+
+```{r c22}
+# Correlation among mammals, with and without log
+mammals %>%
+  summarize(N = n(), 
+            r = cor(BrainWt, BodyWt), 
+            r_log = cor(log(BrainWt), log(BodyWt)))
+```
+
+### Spurious correlation in random data
+
+Statisticians must always be skeptical of potentially spurious correlations. Human beings are very good at seeing patterns in data, sometimes when the patterns themselves are actually just random noise. To illustrate how easy it can be to fall into this trap, we will look for patterns in truly random data.
+
+The noise dataset contains 20 sets of x and y variables drawn at random from a standard normal distribution. Each set, denoted as z, has 50 observations of x, y pairs. Do you see any pairs of variables that might be meaningfully correlated? Are all of the correlation coefficients close to zero?
+
+```{r c23}
+# Create noise
+set.seed(9)
+noise <- data.frame(x = rnorm(1000), y = rnorm(1000), z = rep(1:20, 50))
+```
+
+Create a faceted scatterplot that shows the relationship between each of the 20 sets of pairs of random variables x and y. You will need the facet_wrap() function for this.
+       
+```{r c24}
+# Create faceted scatterplot
+ggplot(dat = noise, aes(x= x, y = y)) + 
+  geom_point() + 
+  facet_wrap(~z) + 
+  theme_bw()
+# Compute correlations for each dataset
+noise_summary <- noise %>%
+  group_by(z) %>%
+  summarize(N = n(), spurious_cor = cor(x, y))
+noise_summary
+
+# Isolate sets with correlations above 0.2 in absolute strength
+noise_summary %>% 
+  filter(abs(spurious_cor) >= 0.2)
+```
+
+
+## Simple linear regression
+
+### The “best fit” line
+
+The simple linear regression model for a numeric response as a function of a numeric explanatory variable can be visualized on the corresponding scatterplot by a straight line. This is a “best fit” line that cuts through the data in a way that minimizes the distance between the line and the data points.
+
+We might consider linear regression to be a specific example of a larger class of smooth models. The geom_smooth() function allows you to draw such models over a scatterplot of the data itself. This technique is known as visualizing the model in the data space. The method argument to geom_smooth() allows you to specify what class of smooth model you want to see. Since we are exploring linear models, we’ll set this argument to the value "lm".
+
+Note that geom_smooth() also takes an se argument that controls the standard error, which we will ignore for now.
+
+#### Exercise
+
+Create a scatterplot of body weight as a function of height for all individuals in the bdims dataset with a simple linear model plotted over the data.
+
+```{r c25}
+library(openintro)
+# Scatterplot with regression line
+ggplot(data = bdims, aes(x = hgt, y = wgt)) + 
+  geom_point(alpha = 0.33) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  theme_bw()
+```
+
+### Uniqueness of least squares regression line
+
+The least squares criterion implies that the slope of the regression line is unique. In practice, the slope is computed by R. In this exercise, you will experiment with trying to find the optimal value for the regression slope for weight as a function of height in the bdims dataset via trial-and-error.
+
+To help, we’ve built a custom function for you called add_line(), which takes a single argument: the proposed slope coefficient.
+
+The bdims dataset is available in your workspace. Experiment with different values (to the nearest integer) of the my_slope parameter until you find one that you think fits best.
+
+```{r c26}
+# Estimate optimal value of my_slope
+#add_line(my_slope = 1.0)
+```
+       
+### Fitting a linear model “by hand”
+
+The bdims_summary data frame contains all of the information you need to compute the slope and intercept of the least squares regression line for body weight (Y) as a function of height (X). You might need to do some algebra to solve for bo!
+
+```{r c27}
+bdims_summary <- bdims %>%
+    summarize(N = n(), r = cor(wgt, hgt), mean_hgt = mean(hgt),
+    sd_hgt = sd(hgt), mean_wgt = mean(wgt), sd_wgt = sd(wgt))
+bdims_summary 
+# Add slope and intercept
+bdims_summary %>%
+  mutate(slope = r*sd_wgt/sd_hgt, 
+         intercept = mean_wgt - slope*mean_hgt)
+```
+
+###  Regression to the mean
+
+Regression to the mean is a concept attributed to Sir Francis Galton. The basic idea is that extreme random observations will tend to be less extreme upon a second trial. This is simply due to chance alone. While “regression to the mean” and “linear regression” are not the same thing, we will examine them together in this exercise.
+
+One way to see the effects of regression to the mean is to compare the heights of parents to their children’s heights. While it is true that tall mothers and fathers tend to have tall children, those children tend to be less tall than their parents, relative to average. That is, fathers who are 3 inches taller than the average father tend to have children who may be taller than average, but by less than 3 inches.
+
+The Galton_men and Galton_women datasets contain data originally collected by Galton himself in the 1880s on the heights of men and women, respectively, along with their parents’ heights
+
+```{r c28}
+#download.file("http://www.randomservices.org/random/data/Galton.txt", destfile = #"./Data/Galton.txt")
+Galton <- read.table("./Data/Galton.txt", header = TRUE)
+Galton_men <- Galton %>%
+  filter(Gender == "M")
+Galton_women <- Galton %>% 
+  filter(Gender == "F")
+```
+
+#### Exercise
+
+Create a scatterplot of the height of men as a function of their father’s height. Add the simple linear regression line and a diagonal line (with slope equal to 1 and intercept equal to 0) to the plot.
+
+```{r c29}
+# Height of children vs. height of father
+ggplot(data = Galton_men, aes(x = Father, y = Height)) +
+  geom_point(alpha = 0.2) + 
+  geom_abline(slope = 1, intercept = 0) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  theme_bw()
+# Height of children vs. height of mother
+ggplot(data = Galton_women, aes(x = Mother, y = Height)) +
+  geom_point(alpha = 0.2) + 
+  geom_abline(slope = 1, intercept = 0) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  theme_bw()
+
+```
+
+## Interpreting regression models
+
+### Interpretation of coefficients
+
+Which of the following is the correct interpretation of the slope coefficient?
+
+Among U.S. counties, each additional percentage point increase in the poverty rate is associated with about a 0.591 percentage point decrease in the high school graduation rate.
+
+Among U.S. counties, each additional percentage point increase in the high school graduation rate is associated with about a 0.591 percentage point decrease in the poverty rate.
+
+Among U.S. counties, each additional percentage point increase in the high school graduation rate is associated with about a 0.591 percentage point increase in the poverty rate.
+
+Among U.S. counties, a 1% increase in the high school graduation rate is associated with about a 0.591% decrease in the poverty rate.
+
+### Fitting simple linear models
+
+While the geom_smooth(method = "lm") function is useful for drawing linear models on a scatterplot, it doesn’t actually return the characteristics of the model. As suggested by that syntax, however, the function that creates linear models is lm(). This function generally takes two arguments:
+
+A formula that specifies the model
+
+A data argument for the data frame that contains the data you want to use to fit the model
+
+The lm() function return a model object having class "lm". This object contains lots of information about your regression model, including the data used to fit the model, the specification of the model, the fitted values and residuals, etc.
+
+```{r c30}
+library(openintro)
+# Linear model for weight as a function of height
+lm(wgt ~ hgt, data = bdims)
+# Linear model for SLG as a function of OBP
+lm(SLG ~ OBP, data = mlbBat10)
+# Log-linear model for body weight as a function of brain weight
+lm(log(BodyWt) ~ log(BrainWt), data = mammals)
+```
+
+### The lm summary output
+
+An "lm" object contains a host of information about the regression model that you fit. There are various ways of extracting different pieces of information.
+
+The coef() function displays only the values of the coefficients. Conversely, the summary() function displays not only that information, but a bunch of other information, including the associated standard error and p-value for each coefficient, the  r2 , adjusted  r2 , and the residual standard error. The summary of an "lm" object in R is very similar to the output you would see in other statistical computing environments (e.g. Stata, SPSS, etc.)
+ 
+#### Exercise
+
+We have already created the mod object, a linear model for the weight of individuals as a function of their height, using the bdims dataset and the code
+Now, you will:
+
+Use coef() to display the coefficients of mod.
+
+```{r c31}
+mod <- lm(wgt ~ hgt, data = bdims)
+mod <- lm(wgt ~ hgt, data = bdims)
+# Show the coefficients
+coef(mod)
+# Show the full output
+summary(mod)
+```
+
+### Fitted values and residuals
+
+The least squares fitting procedure guarantees that the mean of the residuals is zero (n.b., numerical instability may result in the computed values not being exactly zero). At the same time, the mean of the fitted values must equal the mean of the response variable.
+
+In this exercise, we will confirm these two mathematical facts by accessing the fitted values and residuals with the fitted.values() and residuals() functions, respectively, for the following mod
+
+```{r c32}
+mod <- lm(wgt ~ hgt, data = bdims)
+```
+
+#### Exercise
+
+Confirm that the mean of the body weights equals the mean of the fitted values of mod.
+Compute the mean of the residuals of mod.
+
+```{r c33}
+# Mean of weights equal to mean of fitted values?
+mean(bdims$wgt) == mean(fitted.values(mod))
+# Mean of the residuals
+mean(resid(mod))
+```
+
+### Tidying your linear model
+
+As you fit a regression model, there are some quantities (e.g). If there are several of these per-observation quantities, it is sometimes convenient to attach them to the original data as new variables.
+
+The augment() function from the broom package does exactly this. It takes a model object as an argument and returns a data frame that contains the data on which the model was fit, along with several quantities specific to the regression model, including the fitted values, residuals, leverage scores, and standardized residuals.
+
+#### Exercise
+
+The same linear model from the last exercise, mod, is available in your workspace.
+
+Load the broom package.
+Create a new data frame called bdims_tidy that is the augmentation of the mod linear model.
+
+```{r c34}
+# Load broom
+library(broom)
+# Create bdims_tidy
+bdims_tidy <- augment(mod)
+# Glimpse the resulting data frame
+glimpse(bdims_tidy)
+```
+
+### Making predictions
+
+The fitted.values() function or the augment()-ed data frame provides us with the fitted values for the observations that were in the original data. However, once we have fit the model, we may want to compute expected values for observations that were not present in the data on which the model was fit. These types of predictions are called out-of-sample.
+
+The ben data frame contains a height and weight observation for one person.
+
+ben <- data.frame(wgt = 74.8, hgt = 182.8)
+The mod object contains the fitted model for weight as a function of height for the observations in the bdims dataset. We can use the predict() function to generate expected values for the weight of new individuals. We must pass the data frame of new observations through the newdata argument.
+
+#### Exercise
+
+```{r c35}
+ben <- data.frame(wgt = 74.8, hgt = 182.8)
+# Print ben
+ben
+
+# Predict the weight of ben
+predict(mod, newdata = ben)
+```
+
+### Adding a regression line to a plot manually
+
+The geom_smooth() function makes it easy to add a simple linear regression line to a scatterplot of the corresponding variables. And in fact, there are more complicated regression models that can be visualized in the data space with geom_smooth(). However, there may still be times when we will want to add regression lines to our scatterplot manually. To do this, we will use the geom_abline() function, which takes slope and intercept arguments. Naturally, we have to compute those values ahead of time, but we already saw how to do this (e.g. using coef()).
+
+The coefs data frame contains the model estimates retrieved from coef(). Passing this to geom_abline() as the data argument will enable you to draw a straight line on your scatterplot
+
+#### Exercise
+
+Use geom_abline() to add a line defined in the coefs data frame to a scatterplot of weight vs. height for individuals in the bdims dataset.
+
+```{r c36}
+coef(mod)
+coefs <- data.frame(intercept = -105, slope = 1.018)
+coefs
+# Add the line to the scatterplot
+ggplot(data = bdims, aes(x = hgt, y = wgt)) +
+  geom_point(alpha = 0.5) + 
+  theme_bw() + 
+  geom_abline(data = coefs, 
+              aes(intercept = intercept, slope = slope),  
+              color = "dodgerblue")
+```
+
+## Model Fit
+
+### RMSE
+
+The residual standard error reported for the regression model for poverty rate of U.S. counties in terms of high school graduation rate is 4.67. What does this mean?
+
+$The typical difference between the observed poverty rate and the poverty rate predicted by the model is about 4.67 percentage points.
+
+The typical difference between the observed poverty rate and the poverty rate predicted by the model is about 4.67%.
+
+The model explains about 4.67% of the variability in poverty rate among counties.
+
+The model correctly predicted the poverty rate of 4.67% of the counties.
+
+### Standard error of residuals
+
+One way to assess strength of fit is to consider how far off the model is for a typical case. That is, for some observations, the fitted value will be very close to the actual value, while for others it will not. The magnitude of a typical residual can give us a sense of generally how close our estimates are.
+
+However, recall that some of the residuals are positive, while others are negative. In fact, it is guaranteed by the least squares fitting procedure that the mean of the residuals is zero. Thus, it makes more sense to compute the square root of the mean squared residual, or root mean squared error (RMSE). R calls this quantity the residual standard error.
+
+#### Exercise
+
+View a summary() of mod.
+
+```{r c37}
+# View summary of model
+summary(mod)
+# Compute the mean of the residuals
+mean(resid(mod))
+# Compute RMSE
+sqrt(sum(residuals(mod)^2) / df.residual(mod))
+```
+
+### Assessing simple linear model fit
+
+The bdims_tidy data frame is the result of augment()-ing the bdims data frame with the mod for wgt as a function of hgt.
+
+```{r c38}
+bdims_tidy <- augment(mod)
+# View model summary
+summary(mod)
+# Compute R-squared
+bdims_tidy %>%
+  summarize(var_y = var(wgt), var_e = var(.resid)) %>%
+  mutate(R_squared = 1 - var_e/var_y)
+```
+
+This means that 51.4% of the variability in weight is explained by height.
+
+### Interpretation of R^2
+
+The R^2 reported for the regression model for poverty rate of U.S. counties in terms of high school graduation rate is 0.464.
+
+```{r c39}
+lm(formula = poverty ~ hs_grad, data = countyComplete) %>%
+  summary()
+```
+
+How should this result be interpreted?
+
+46.4% of the variability in high school graduate rate among U.S. counties can be explained by poverty rate.
+
+$46.4% of the variability in poverty rate among U.S. counties can be explained by high school graduation rate.
+
+This model is 46.4% effective.
+
+The correlation between poverty rate and high school graduation rate is 0.464.
+
+### Linear vs. average
+
+In Figure 6.1, we visualize the residuals for the null model (mod_null at left) vs. the simple linear regression model (mod_hgt at right) with height as a single explanatory variable. Try to convince yourself that, if you squared the lengths of the grey arrows on the left and summed them up, you would get a larger value than if you performed the same operation on the grey arrows on the right.
+
+It may be useful to preview these augment()-ed data frames with glimpse():
+
+```{r c40}
+#glimpse(mod_null)
+#glimpse(mod_hgt)
+```
+
+#### Exercise
+
+Compute the sum of the squared residuals (SSE) for the null model mod_null.
+ 
+```{r c41}
+# Compute SSE for null model
+#mod_null %>%
+  #summarize(SSE = var(wgt))
+# Compute SSE for regression model
+#mod_hgt %>%
+ # summarize(SSE = var(.resid))
+```
+
+### Leverage
+
+The leverage of an observation in a regression model is defined entirely in terms of the distance of that observation from the mean of the explanatory variable. That is, observations close to the mean of the explanatory variable have low leverage, while observations far from the mean of the explanatory variable have high leverage. Points of high leverage may or may not be influential.
+
+The augment() function from the broom package will add the leverage scores (.hat) to a model data frame.
+
+#### Exercise
+
+Use augment() to list the top 6 observations by their leverage scores, in descending order.
+
+```{r c42}
+mod <- lm(SLG ~ OBP, data = mlbBat10)
+# Rank points of high leverage
+mod %>%
+  augment() %>%
+  arrange(desc(.hat)) %>%
+  head()
+```
+
+### Influence
+
+As noted previously, observations of high leverage may or may not be influential. The influence of an observation depends not only on its leverage, but also on the magnitude of its residual. Recall that while leverage only takes into account the explanatory variable.
+
+Influential points are likely to have high leverage and deviate from the general relationship between the two variables. We measure influence using Cook’s distance, which incorporates both the leverage and residual of each observation.
+
+Use augment() to list the top 6 observations by their Cook’s distance (.cooksd), in descending order.
+
+```{r c43}
+# Rank influential points
+mod %>%
+ augment() %>%
+ arrange(desc(.cooksd)) %>%
+ head()
+```
+
+### Removing outliers
+
+Observations can be outliers for a number of different reasons. Statisticians must always be careful—and more importantly, transparent—when dealing with outliers. Sometimes, a better model fit can be achieved by simply removing outliers and re-fitting the model. However, one must have strong justification for doing this. A desire to have a higher  
+R
+2
+  is not a good enough reason!
+
+In the mlbBat10 data, the outlier with an OBP of 0.550 is Bobby Scales, an infielder who had four hits in 13 at-bats for the Chicago Cubs. Scales also walked seven times, resulting in his unusually high OBP. The justification for removing Scales here is weak. While his performance was unusual, there is nothing to suggest that it is not a valid data point, nor is there a good reason to think that somehow we will learn more about Major League Baseball players by excluding him.
+
+Nevertheless, we can demonstrate how removing him will affect our model.
+
+Use filter() to create a subset of mlbBat10 called nontrivial_players consisting of only those players with at least 10 at-bats and OBP of below 0.500.
+
+```{r c44}
+# Create nontrivial_players
+nontrivial_players <- mlbBat10 %>%
+ filter(AB >= 10, OBP < 0.500)
+# Fit model to new data
+mod_cleaner <- lm(SLG ~ OBP, data = nontrivial_players)
+# View model summary
+summary(mod_cleaner)
+summary(mod_cleaner)$r.square
+# Original with all players
+summary(mod)$r.square
+# Visualize new model
+ggplot(data = nontrivial_players, aes(x = OBP, y = SLG)) +
+  geom_point(alpha = 0.33) + 
+  geom_smooth(method = "lm") + 
+  theme_bw()
+```
+
+### High leverage points
+
+Not all points of high leverage are influential. While the high leverage observation corresponding to Bobby Scales in the previous exercise is influential, the three observations for players with OBP and SLG values of 0 are not influential.
+
+This is because they happen to lie right near the regression anyway. Thus, while their extremely low OBP gives them the power to exert influence over the slope of the regression line, their low SLG prevents them from using it.
+
+The linear model, mod, is available in your workspace. Use a combination of augment(), arrange() with two arguments, and head() to find the top 6 observations with the highest leverage but the lowest Cook’s distance.
+
+```{r c46}
+# Rank high leverage points
+mod %>%
+ augment() %>%
+ arrange(desc(.hat), .cooksd) %>%
+ head()
+
+```
+
