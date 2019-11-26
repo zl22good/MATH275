@@ -80,7 +80,7 @@ fall <- firedata %>%
   select(Season, Incident.Type,Total_Loss,PercentLoss)
 
 #Box plot of all the subsets
-boxplot(winter$PercentLoss,spring$PercentLoss,summer$PercentLoss,fall$PercentLoss,
+boxplot(log(winter$PercentLoss),log(spring$PercentLoss),log(summer$PercentLoss),log(fall$PercentLoss),
         names = c("Winter","Spring","Summer","Fall"), xlab = "Season", ylab = "Total Loss")
 
 #T test, winter and spring 
@@ -101,8 +101,12 @@ t.test(spring$PercentLoss,fall$PercentLoss)
 #T test, summer and fall 
 t.test(summer$PercentLoss,fall$PercentLoss)
 
+#We see that the mean is in the fall is lower then the mean in spring
+#scaled box plot to see changes better
 
 #Percent loss summary of each season based on incident type
 firedata %>%
   group_by(Season, Incident.Type) %>%
   summarize(Md = median(PercentLoss), Mean = mean(PercentLoss), SD = sd(PercentLoss), N = n())
+0.104 0.518  1.62  1066
+2 Spring 0.109 0.783  2.38
