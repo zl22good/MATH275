@@ -7,29 +7,129 @@ output: ioslides_presentation
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
 ```
 
-## R Markdown
+## Original Data
 
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r}
+firedata <- read.csv("PropertyLoss.csv")
+head(firedata[,c(2,4)])
+head(firedata[,c(7,8)])
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+#creat the month collum
+firedata$Month <-  months(as.Date(firedata$Alm_Date, "%m/%d/%Y"))
 
-## Slide with Bullets
-
-- Bullet 1
-- Bullet 2
-- Bullet 3
-
-## Slide with R Output
-
-```{r cars, echo = TRUE}
-summary(cars)
+#Turn month into the season
+firedata <- transform(firedata, Season= ifelse(firedata$Month == "January", "Winter",
+                  ifelse(firedata$Month == "February", "Winter", 
+                  ifelse(firedata$Month == "March", "Spring",
+                  ifelse(firedata$Month == "April", "Spring",
+                  ifelse(firedata$Month == "May", "Spring",
+                  ifelse(firedata$Month == "June", "Summer",
+                  ifelse(firedata$Month == "July", "Summer",
+                  ifelse(firedata$Month == "August", "Summer",
+                  ifelse(firedata$Month == "September", "Fall",
+                  ifelse(firedata$Month == "October", "Fall",
+                  ifelse(firedata$Month == "November", "Fall",
+                  ifelse(firedata$Month == "December", "Winter","NULL")))))))))))))
 ```
 
-## Slide with Plot
+## Data Modifying
 
-```{r pressure}
-plot(pressure)
+```{r, echo = TRUE}
+#parse out the incident numbers
+firedata$Incident.Num <- strtoi(substr(firedata$Inci_type,0,3))
+
+#collum with the incident type
+firedata <- transform(firedata,Incident.Type = 
+                   ifelse(Incident.Num < "124", "Structure Fire", 
+                   ifelse(Incident.Num < "139", "Vehicle Fire",
+                   ifelse(Incident.Num < "165", "Outside Fire",
+                   "Not a Fire"))))
+
+#Create the percent loss
+firedata$PercentLoss <- (as.numeric(firedata$Pre_Inci_Value)
+                         / as.numeric(firedata$Total_Loss))
+
+#filter out non fires
+firedata <- filter(firedata, Incident.Type != "Not a Fire")
 ```
 
+## Modified Data
+
+```{r}
+head(firedata[,c(11,13,14)])
+```
+
+## Anova Tests
+
+Analysis of Variance (ANOVA) is a statistical method used to test differences between two or more means.
+
+```{r, echo = TRUE}
+#Anova test of total loss based on season
+aovSeason = aov(PercentLoss ~ Season, data = firedata)
+summary(aovSeason)
+```
+
+## Anova Tests Cont.
+
+```{r, echo = TRUE}
+#Anova test of total loss based on Incident.Type
+aovI = aov(PercentLoss ~ Incident.Type, data = firedata)
+summary(aovI)
+```
+
+## Box Plot of All the Months
+
+The box plot is log scaled for the percent loss to see changes better
+
+```{r}
+#Winter Subset
+winter <- firedata %>%
+  filter(Season == "Winter") %>%
+  group_by(Season) %>%
+  select(Season, Incident.Type,Total_Loss,PercentLoss)
+
+#Spring Subset
+spring <- firedata %>%
+  filter(Season == "Spring") %>%
+  group_by(Season) %>%
+  select(Season, Incident.Type,Total_Loss,PercentLoss)
+
+#Summer Subset
+summer <- firedata %>%
+  filter(Season == "Summer") %>%
+  group_by(Season) %>%
+  select(Season, Incident.Type,Total_Loss,PercentLoss)
+
+#Fall Subset
+fall <- firedata %>%
+  filter(Season == "Fall") %>%
+  group_by(Season) %>%
+  select(Season, Incident.Type,Total_Loss,PercentLoss)
+
+#Box plot of all the subsets
+boxplot(log(winter$PercentLoss),log(spring$PercentLoss),log(summer$PercentLoss),log(fall$PercentLoss),
+        names = c("Winter","Spring","Summer","Fall"), xlab = "Season", ylab = "Log Total Loss")
+```
+
+## Summary of Percent Loss Based on Season
+
+We see that the mean in the fall is lower then the mean in spring
+
+```{r}
+#Percent loss summary of each season
+firedata %>%
+  group_by(Season) %>%
+  summarize(Md = median(PercentLoss), Mean = mean(PercentLoss), SD = sd(PercentLoss), N = n())
+```
+
+## T Test
+
+```{r}
+#T test, spring and fall 
+t.test(spring$PercentLoss,fall$PercentLoss)
+```
+
+# Question?
