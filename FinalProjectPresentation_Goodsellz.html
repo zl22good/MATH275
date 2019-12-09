@@ -3122,23 +3122,43 @@ slide:not(.current) .plotly.html-widget{
 
 <slide class=""><hgroup><h2>Original Data</h2></hgroup><article  id="original-data">
 
-<pre >##   Alm_Date                                         Inci_type
-## 1 4/1/2012 112 - Fires in structure other than in a building
-## 2 4/3/2012                               111 - Building fire
-## 3 4/4/2012                      131 - Passenger vehicle fire
-## 4 4/6/2012                               111 - Building fire
-## 5 4/6/2012                               111 - Building fire
-## 6 4/7/2012                      131 - Passenger vehicle fire</pre>
+<ul>
+<li>Alarm Date
 
-<pre >##   Total_Loss Pre_Inci_Value
-## 1       3000          80000
-## 2       5000         127000
-## 3       4000           4000
-## 4       5000          50000
-## 5       5000           5000
-## 6        250           1500</pre>
+<ul>
+<li>Month / Day / Year Format</li>
+<li>Dates from 4/1/2012 to 8/15/2019</li>
+</ul></li>
+<li>Incident Types
 
-</article></slide><slide class=""><hgroup><h2>Data Modifying</h2></hgroup><article  id="data-modifying">
+<ul>
+<li>Incident Type Number Followed by a Description</li>
+<li>111 - Building fire</li>
+<li>131 - Passenger vehicle fire</li>
+<li>164 - Outside mailbox fire</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Original Data Cont.</h2></hgroup><article  id="original-data-cont.">
+
+<ul>
+<li>Total Loss
+
+<ul>
+<li>Total Loss of the Property in a Fire</li>
+<li>Min - 0</li>
+<li>Max - 1,245,000</li>
+</ul></li>
+<li>Pre-Incident Value
+
+<ul>
+<li>Value of the Property Before an Incident</li>
+<li>Min - 0</li>
+<li>Max - 40,000,000</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Modifying the Data</h2></hgroup><article  id="modifying-the-data">
 
 <pre class = 'prettyprint lang-r'>#parse out the incident numbers
 firedata$Incident.Num &lt;- strtoi(substr(firedata$Inci_type,0,3))
@@ -3159,13 +3179,29 @@ firedata &lt;- filter(firedata, Incident.Type != &quot;Not a Fire&quot;)</pre>
 
 </article></slide><slide class=""><hgroup><h2>Modified Data</h2></hgroup><article  id="modified-data">
 
-<pre >##   Season  Incident.Type PercentLoss
-## 1 Spring Structure Fire   0.3093333
-## 2 Spring Structure Fire   0.0174000
-## 3 Spring   Vehicle Fire   0.1557500
-## 4 Spring Structure Fire   0.1462000
-## 5 Spring Structure Fire   0.1460000
-## 6 Spring   Vehicle Fire   0.5440000</pre>
+<ul>
+<li>Season
+
+<ul>
+<li>Spring - March, April, May</li>
+<li>Summer - June, July, August</li>
+<li>Fall - September, October, November</li>
+<li>Winter - December, January, Febuary</li>
+</ul></li>
+<li>Incident Type
+
+<ul>
+<li>Structure Fire</li>
+<li>Vehicle Fire</li>
+<li>Outside Fire</li>
+</ul></li>
+<li>Percent Loss
+
+<ul>
+<li>Min - 0%</li>
+<li>Max - 80.2%</li>
+</ul></li>
+</ul>
 
 </article></slide><slide class=""><hgroup><h2>Anova Tests</h2></hgroup><article  id="anova-tests">
 
@@ -3192,6 +3228,15 @@ summary(aovI)</pre>
 ## Residuals     4738  28039     5.9                   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
+
+</article></slide><slide class=""><hgroup><h2>Summary of Percent Loss Based on Incident Type</h2></hgroup><article  id="summary-of-percent-loss-based-on-incident-type">
+
+<pre >## # A tibble: 3 x 5
+##   Incident.Type      Md  Mean    SD     N
+##   &lt;fct&gt;           &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
+## 1 Outside Fire   0.478  2.42  5.20    280
+## 2 Structure Fire 0.0534 0.676 2.56   2988
+## 3 Vehicle Fire   0.136  0.306 0.787  1473</pre>
 
 </article></slide><slide class=""><hgroup><h2>Box Plot of All the Months</h2></hgroup><article  id="box-plot-of-all-the-months">
 

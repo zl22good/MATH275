@@ -2,7 +2,8 @@
 title: "Final Project Presentation"
 author: "Zachary Goodsell"
 date: "12/11/2019"
-output: ioslides_presentation
+output:
+  ioslides_presentation
 ---
 
 ```{r setup, include=FALSE}
@@ -12,10 +13,30 @@ library(dplyr)
 
 ## Original Data
 
+* Alarm Date
+    + Month / Day / Year Format
+    + Dates from 4/1/2012 to 8/15/2019
+
+- Incident Types
+    + Incident Type Number Followed by a Description
+    + 111 - Building fire
+    + 131 - Passenger vehicle fire
+    + 164 - Outside mailbox fire
+
+## Original Data Cont.
+
+- Total Loss
+    + Total Loss of the Property in a Fire
+    + Min - 0
+    + Max - 1,245,000
+
+- Pre-Incident Value
+    + Value of the Property Before an Incident
+    + Min - 0
+    + Max - 40,000,000
+
 ```{r}
 firedata <- read.csv("PropertyLoss.csv")
-head(firedata[,c(2,4)])
-head(firedata[,c(7,8)])
 
 #creat the month collum
 firedata$Month <-  months(as.Date(firedata$Alm_Date, "%m/%d/%Y"))
@@ -35,7 +56,7 @@ firedata <- transform(firedata, Season= ifelse(firedata$Month == "January", "Win
                   ifelse(firedata$Month == "December", "Winter","NULL")))))))))))))
 ```
 
-## Data Modifying
+## Modifying the Data
 
 ```{r, echo = TRUE}
 #parse out the incident numbers
@@ -58,7 +79,21 @@ firedata <- filter(firedata, Incident.Type != "Not a Fire")
 
 ## Modified Data
 
-```{r}
+* Season
+    + Spring - March, April, May
+    + Summer - June, July, August
+    + Fall - September, October, November
+    + Winter - December, January, Febuary
+
+* Incident Type
+    + Structure Fire
+    + Vehicle Fire
+    + Outside Fire
+    
+* Percent Loss
+    + Min - 0%
+    + Max - 80.2%
+```{r, include=F}
 head(firedata[,c(11,13,14)])
 ```
 
@@ -78,6 +113,16 @@ summary(aovSeason)
 #Anova test of total loss based on Incident.Type
 aovI = aov(PercentLoss ~ Incident.Type, data = firedata)
 summary(aovI)
+```
+
+## Summary of Percent Loss Based on Incident Type
+
+```{r}
+#Percent loss summary of each season based on incident type
+firedata %>%
+  group_by(Incident.Type) %>%
+  summarize(Md = median(PercentLoss), Mean = mean(PercentLoss), SD = sd(PercentLoss), N = n())
+
 ```
 
 ## Box Plot of All the Months
@@ -130,6 +175,27 @@ firedata %>%
 ```{r}
 #T test, spring and fall 
 t.test(spring$PercentLoss,fall$PercentLoss)
+```
+
+
+```{r, include= F}
+#T test, winter and spring 
+t.test(winter$PercentLoss,spring$PercentLoss)
+
+#T test, winter and summer 
+t.test(winter$PercentLoss,summer$PercentLoss)
+
+#T test, winter and fall 
+t.test(winter$PercentLoss,fall$PercentLoss)
+
+#T test, spring and summer 
+t.test(spring$PercentLoss,summer$PercentLoss)
+
+#T test, spring and fall 
+t.test(spring$PercentLoss,fall$PercentLoss)
+
+#T test, summer and fall 
+t.test(summer$PercentLoss,fall$PercentLoss)
 ```
 
 # Question?

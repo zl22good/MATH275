@@ -106,7 +106,5 @@ t.test(summer$PercentLoss,fall$PercentLoss)
 
 #Percent loss summary of each season based on incident type
 firedata %>%
-  group_by(Season, Incident.Type) %>%
+  group_by(Incident.Type) %>%
   summarize(Md = median(PercentLoss), Mean = mean(PercentLoss), SD = sd(PercentLoss), N = n())
-0.104 0.518  1.62  1066
-2 Spring 0.109 0.783  2.38
