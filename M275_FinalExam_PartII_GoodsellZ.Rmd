@@ -20,7 +20,7 @@ sleepAp <- read_excel("OSASdataFinalExam.xlsx")
 
 ## Question 1
 
-Create a new variable in R for the waist-to-height ratio (waist circumference / height) from the dataset and define it as WtoH for statistical analysis -
+Create a new variable in R for the waist-to-height ratio (waist circumference / height) from the data set and define it as WtoH for statistical analysis -
 
 ```{r}
 #Create the waist-to-height ratio collum
@@ -142,7 +142,7 @@ moderate <- filter(sleepAp, severity == "moderateOSAS")
 severe <- filter(sleepAp, severity == "severeOSAS")
 
 
-osasTable <- data.frame("Group" = c("Control","OSAS","Mild OSAS","Moderate OSAS"," Severe OSAS"), 
+table2 <- data.frame("Group" = c("Control","OSAS","Mild OSAS","Moderate OSAS"," Severe OSAS"), 
 "BMI" = c(paste(mean(NOosas$BMI), " +/- ", (2 * sd(NOosas$BMI))),paste(mean(osas$BMI), " +/- ", (2 * sd(osas$BMI))),paste(mean(mild$BMI), " +/- ", (2 * sd(mild$BMI))),paste(mean(moderate$BMI), " +/- ", (2 * sd(moderate$BMI))),paste(mean(severe$BMI), " +/- ", (2 * sd(severe$BMI)))),
 
 "Waist Circumference" = c(paste(mean(NOosas$WAIST), " +/- ", (2 * sd(NOosas$WAIST))),paste(mean(osas$WAIST), " +/- ", (2 * sd(osas$WAIST))),paste(mean(mild$WAIST), " +/- ", (2 * sd(mild$WAIST))),paste(mean(moderate$WAIST), " +/- ", (2 * sd(moderate$WAIST))),paste(mean(severe$WAIST), " +/- ", (2 * sd(severe$WAIST)))), 
@@ -150,7 +150,7 @@ osasTable <- data.frame("Group" = c("Control","OSAS","Mild OSAS","Moderate OSAS"
 "Waist-to-Height Ratio" = c(paste(mean(NOosas$WtoH), " +/- ", (2 * sd(NOosas$WtoH))),paste(mean(osas$WtoH), " +/- ", (2 * sd(osas$WtoH))),paste(mean(mild$WtoH), " +/- ", (2 * sd(mild$WtoH))),paste(mean(moderate$WtoH), " +/- ", (2 * sd(moderate$WtoH))),paste(mean(severe$WtoH), " +/- ", (2 * sd(severe$WtoH)))) )
 
 
-kable(osasTable)
+kable(table2)
 
 ```
 
@@ -162,3 +162,47 @@ kable(osasTable)
 boxplot(NOosas$BMI,osas$BMI,mild$BMI,moderate$BMI,severe$BMI, ylab = "BMI" , xlab = "Group",col="orange",border="brown", names = c("Control","OSAS","Mild OSAS","Moderate OSAS"," Severe OSAS"), cex.axis=0.75)
 ```
 
+## Question 6
+
+```{r, echo=FALSE}
+
+osasM <- filter(osas, sex == "male")
+
+osasF <- filter(osas, sex == "female")
+
+NOosasM <- filter(NOosas, sex == "male")
+
+NOosasF <- filter(NOosas, sex == "female")
+
+table3 <- data.frame("Sex" = c("Female","Female","Female","Male","Male","Male"), 
+"Summary" = c("Mean +/- SD","Median","Min - Max"),
+"OSAS Patients" = c(paste(mean(osasF$WtoH), " +/-  ", sd(osasF$WtoH)), paste(median(osasF$WtoH)),paste(min(osasF$WtoH), " - ",max(osasF$WtoH)),paste(mean(osasM$WtoH), " +/-  ", sd(osasM$WtoH)), paste(median(osasM$WtoH)),paste(min(osasM$WtoH), " - ",max(osasM$WtoH))),"Control Group" = c(paste(mean(NOosasF$WtoH), " +/-  ", sd(NOosasF$WtoH)), paste(median(NOosasF$WtoH)),paste(min(NOosasF$WtoH), " - ",max(NOosasF$WtoH)),paste(mean(NOosasM$WtoH), " +/-  ", sd(NOosasM$WtoH)), paste(median(NOosasM$WtoH)),paste(min(NOosasM$WtoH), " - ",max(NOosasM$WtoH))
+), "p-value" = c("NA","3.859e-11","NA","NA","4.147e-08","NA"))
+kable(table3)
+
+tF = t.test(osasF$WtoH,NOosasF$WtoH)
+tM = t.test(osasM$WtoH,NOosasM$WtoH)
+
+```
+
+ <font size="2">Table 3. Summary statistics of Waist-to Height Ratio for females and males separately in the patient and control groups. The p-values were obtained from the Welch Two Sample t-test.</font>
+
+```{r, echo=FALSE}
+hist(osasF$WtoH,col=rgb(1,0,0,0.5), main= "Male Waist-to Height Ratio for OSAS Patients vs Control Groups", xlab="Waist-to Height Ratio")
+hist(NOosasF$WtoH, col=rgb(0,0,1,0.5), add=T)
+legend("topright", c("OSAS Patients", "Control Group"), lty=c(1,1), bty = "n", angle = c(0, 0), density = c(100, 100),
+    fill=c("red", "blue"))
+
+hist(osasM$WtoH,col=rgb(1,0,0,0.5), main= "Male Waist-to Height Ratio for OSAS Patients vs Control Groups", xlab="Waist-to Height Ratio")
+hist(NOosasM$WtoH, col=rgb(0,0,1,0.5), add=T)
+legend("topright", c("OSAS Patients", "Control Group"), lty=c(1,1), bty = "n", angle = c(0, 0), density = c(100, 100),
+    fill=c("red", "blue"))
+```
+
+## Question 7
+
+The mean and standard deviation for the BMI of patients with severe OSAS is 32.27 and 11.57. When the One Sample t-test is used with the true mean is equal to 30, we get  p-value of 2.308e-08. This value is significant therefore the null hypothesis is rejected and the alternative hypothesis of true mean is greater than 30 can be accepted. 
+
+```{r, include=FALSE}
+t.test(severe$BMI,mu = 30, alternative = "greater")
+```
