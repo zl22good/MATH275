@@ -1,0 +1,141 @@
+---
+title: "MATH 275 Final Exam Part II"
+author: "Zachary Goodsell"
+date: "12/10/2019"
+output:  
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(readxl)
+library(knitr)
+library(kableExtra)
+sleepAp <- read_excel("OSASdataFinalExam.xlsx")
+```
+
+## Question 1
+
+Create a new variable in R for the waist-to-height ratio (waist circumference / height) from the dataset and define it as WtoH for statistical analysis -
+
+```{r}
+#Create the waist-to-height ratio collum
+sleepAp$WtoH <- as.numeric(sleepAp$WAIST) / as.numeric(sleepAp$HEIGHT)
+head(sleepAp$WtoH)
+```
+
+Create new categories in R for the severity of OSAS, based on the above information, name them as mildOSAS, moderateOSAS, and severeOSAS - 
+
+```{r}
+#collum with the OSAS severity
+sleepAp <- transform(sleepAp, severity  = 
+                   ifelse(as.numeric(AHI) < as.numeric("5"), "Control",
+                   ifelse(as.numeric(AHI) < as.numeric("15"), "mildOSAS",
+                   ifelse(as.numeric(AHI) < as.numeric("30"), "moderateOSAS",
+                   "severeOSAS"))))
+```
+
+## Question 2 
+
+There were 509 cases in the study. The mean age was 47.86 (with sd= 12.5, min=18, max=78). Of these cases, 437 (86%) were diagnosed with OSAS and 72 (14%) were not. Two hundred and nine (41%) of the patients had severe, 124 (24%) had moderate, and 104 (20%) had mild OSAS. 
+
+```{r, include=FALSE}
+length(sleepAp$age)
+
+summary(sleepAp$age)
+
+sd(sleepAp$age)
+
+table(sleepAp$severity)
+
+(437)/(437 + 72)
+
+(72)/(437 + 72)
+
+(209)/(437 + 72)
+
+(124)/(437 + 72)
+
+(104)/(437 + 72)
+
+```
+
+The mean age of patients with OSAS (mean ± sd = 49.27±12.01) was significantly higher than those without OSAS (mean ± sd = 39.35±12.09) (p-value 4.444e-09, Welch t-test).
+
+```{r, include=FALSE}
+osas <- filter(sleepAp, severity != "Control")
+
+NOosas <- filter(sleepAp, severity == "Control")
+
+summary(osas$age)
+
+sd(osas$age)
+
+summary(NOosas$age)
+
+sd(NOosas$age)
+
+t.test(osas$age,NOosas$age)
+
+```
+
+## Question 3
+
+One hundred fifty (29.4%) of the participants were female and 359 were male. Of the patients with OSAS, 114 were female (27%) and 323 were male (74%). There were 36 females and 36 male participants who were not diagnosed with OSAS. 
+
+```{r, include=FALSE}
+table(sleepAp$sex)
+
+150/(150+359)
+
+table(osas$sex)
+
+114 / (114 + 323 )
+
+323 / (114 + 323 )
+
+table(NOosas$sex)
+
+
+```
+
+```{r, echo=FALSE}
+
+osasTable <- data.frame("Sex" = c("Female","Male"), "OSAS Patients" = c("114","323"), "Control Group" = c("36","36"))
+kable(osasTable)
+
+```
+
+Table 1. Number of female and male cases in patient and control groups.
+
+There was an association between sex and incidence of OSAS (p-value 6.765e-05, Chi-square test). It means that, the incidence of OSAS among males (90%) is higher than that in females (78%) (p-value 0.000154, two-sample proportion test).
+
+```{r, include=FALSE}
+#collum with the OSAS or not
+sleepAp <- transform(sleepAp, present  = 
+                   ifelse(as.numeric(AHI) < as.numeric("5"), "no",
+                   ifelse(as.numeric(AHI) < as.numeric("15"), "yes",
+                   ifelse(as.numeric(AHI) < as.numeric("30"), "yes",
+                   "yes"))))
+
+chisq.test(sleepAp$present,sleepAp$sex)
+
+
+prop.test(c(323,114),c(355,146))
+
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

@@ -13,6 +13,9 @@ library(dplyr)
 
 ## Original Data
 
+Data from Louisville KY.
+Based on property loss and damage due to fires.
+ 
 * Alarm Date
     + Month / Day / Year Format
     + Dates from 4/1/2012 to 8/15/2019
