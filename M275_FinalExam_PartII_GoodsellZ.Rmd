@@ -14,6 +14,7 @@ library(dplyr)
 library(readxl)
 library(knitr)
 library(kableExtra)
+library(broom)
 sleepAp <- read_excel("OSASdataFinalExam.xlsx")
 ```
 
@@ -109,7 +110,7 @@ kable(osasTable)
 
 ```
 
-Table 1. Number of female and male cases in patient and control groups.
+ <font size="2"> Table 1. Number of female and male cases in patient and control groups.</font>
 
 There was an association between sex and incidence of OSAS (p-value 6.765e-05, Chi-square test). It means that, the incidence of OSAS among males (90%) is higher than that in females (78%) (p-value 0.000154, two-sample proportion test).
 
@@ -126,16 +127,38 @@ chisq.test(sleepAp$present,sleepAp$sex)
 
 prop.test(c(323,114),c(355,146))
 
+```
 
+## Question 4
+
+Calculate the 95% confidence interval for the mean of the following parameters for the population of OSAS patients and healthy people; and mild, moderate and severe OSAS patients.
+
+```{r, echo = FALSE}
+
+mild <- filter(sleepAp, severity != "mildOSAS")
+
+moderate <- filter(sleepAp, severity == "moderateOSAS")
+
+severe <- filter(sleepAp, severity == "severeOSAS")
+
+
+osasTable <- data.frame("Group" = c("Control","OSAS","Mild OSAS","Moderate OSAS"," Severe OSAS"), 
+"BMI" = c(paste(mean(NOosas$BMI), " +/- ", (2 * sd(NOosas$BMI))),paste(mean(osas$BMI), " +/- ", (2 * sd(osas$BMI))),paste(mean(mild$BMI), " +/- ", (2 * sd(mild$BMI))),paste(mean(moderate$BMI), " +/- ", (2 * sd(moderate$BMI))),paste(mean(severe$BMI), " +/- ", (2 * sd(severe$BMI)))),
+
+"Waist Circumference" = c(paste(mean(NOosas$WAIST), " +/- ", (2 * sd(NOosas$WAIST))),paste(mean(osas$WAIST), " +/- ", (2 * sd(osas$WAIST))),paste(mean(mild$WAIST), " +/- ", (2 * sd(mild$WAIST))),paste(mean(moderate$WAIST), " +/- ", (2 * sd(moderate$WAIST))),paste(mean(severe$WAIST), " +/- ", (2 * sd(severe$WAIST)))), 
+
+"Waist-to-Height Ratio" = c(paste(mean(NOosas$WtoH), " +/- ", (2 * sd(NOosas$WtoH))),paste(mean(osas$WtoH), " +/- ", (2 * sd(osas$WtoH))),paste(mean(mild$WtoH), " +/- ", (2 * sd(mild$WtoH))),paste(mean(moderate$WtoH), " +/- ", (2 * sd(moderate$WtoH))),paste(mean(severe$WtoH), " +/- ", (2 * sd(severe$WtoH)))) )
+
+
+kable(osasTable)
 
 ```
 
-## Including Plots
+ <font size="2"> Table 2. 95% confidence interval for the mean of the populations.</font>
 
-You can also embed plots, for example:
+## Question 5
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r, echo=FALSE}
+boxplot(NOosas$BMI,osas$BMI,mild$BMI,moderate$BMI,severe$BMI, ylab = "BMI" , xlab = "Group",col="orange",border="brown", names = c("Control","OSAS","Mild OSAS","Moderate OSAS"," Severe OSAS"), cex.axis=0.75)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
